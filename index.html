@@ -4,31 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SISTEMA: MONARCA DAS SOMBRAS</title>
+    
     <style>
+        /* Variáveis de cores para facilitar mudanças globais no tema */
         :root {
-            --system-blue: #00d4ff;
-            --system-bg: #0a0a0c;
-            --system-card: #161b22;
-            --penalty-red: #ff4444;
-            --success-green: #00ff88;
+            --system-blue: #00d4ff;     /* Azul neon padrão */
+            --system-bg: #0a0a0c;       /* Fundo quase preto */
+            --system-card: #161b22;     /* Cinza escuro dos cards */
+            --penalty-red: #ff4444;     /* Vermelho para alertas */
+            --success-green: #00ff88;   /* Verde para conclusões */
         }
 
+        /* Configurações gerais do corpo da página */
         body {
             background-color: var(--system-bg);
             color: white;
             font-family: 'Segoe UI', Tahoma, sans-serif;
             display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Alinhado ao topo para scroll */
+            justify-content: center;    /* Centraliza horizontalmente */
+            align-items: flex-start;    /* Alinha ao topo para permitir rolagem */
             min-height: 100vh;
             margin: 0;
             padding: 20px;
-            text-transform: uppercase;
-            gap: 20px;
-            flex-wrap: wrap; /* Permite que as regras desçam no celular */
+            text-transform: uppercase;  /* Força todos os textos em MAIÚSCULO */
+            gap: 20px;                  /* Espaço entre a janela e o painel de regras */
+            flex-wrap: wrap;            /* Faz o conteúdo "quebrar" para baixo no celular */
         }
 
-        /* JANELA PRINCIPAL */
+        /* Container principal do sistema (Janela de Status) */
         #system-window {
             width: 100%;
             max-width: 400px;
@@ -39,7 +42,7 @@
             border-radius: 8px;
         }
 
-        /* PAINEL LATERAL DE REGRAS */
+        /* Painel de Instruções (Lateral no PC / Inferior no Celular) */
         #info-panel {
             width: 100%;
             max-width: 300px;
@@ -51,32 +54,120 @@
             line-height: 1.6;
         }
 
-        .info-header { color: var(--system-blue); font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;}
+        /* Títulos internos dos painéis */
+        .info-header { 
+            color: var(--system-blue); 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+            border-bottom: 1px solid #333; 
+            padding-bottom: 5px;
+        }
+
+        /* Itens da lista de regras */
         .rule-item { margin-bottom: 12px; color: #bbb; }
         .rule-item b { color: #eee; }
 
-        /* TABELA DE RANKS DENTRO DAS REGRAS */
+        /* Tabela de Ranks no painel lateral */
         .rank-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.65rem; }
         .rank-table td { border: 1px solid #333; padding: 5px; }
         .rank-table tr:nth-child(even) { background: rgba(255,255,255,0.03); }
 
-        /* PLAYER DE MÚSICA */
-        .audio-player { background: rgba(0, 212, 255, 0.05); padding: 15px; border-radius: 5px; margin-bottom: 15px; border: 1px solid rgba(0, 212, 255, 0.3); text-align: center; }
+        /* Estilização do Player de Vídeo/Áudio */
+        .audio-player { 
+            background: rgba(0, 212, 255, 0.05); 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin-bottom: 15px; 
+            border: 1px solid rgba(0, 212, 255, 0.3); 
+            text-align: center; 
+        }
+
+        /* Botões de controle da música */
         .player-controls { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
-        .control-btn { background: none; border: 1px solid var(--system-blue); color: var(--system-blue); padding: 8px 12px; cursor: pointer; font-size: 0.9rem; border-radius: 3px; font-weight: bold; }
+        .control-btn { 
+            background: none; 
+            border: 1px solid var(--system-blue); 
+            color: var(--system-blue); 
+            padding: 8px 12px; 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+            border-radius: 3px; 
+            font-weight: bold; 
+        }
         .control-btn:hover { background: var(--system-blue); color: black; }
 
-        #rank-display { text-align: center; font-size: 2.8rem; font-weight: 900; margin: 10px 0; text-shadow: 0 0 10px rgba(0, 212, 255, 0.5); }
-        #rank-title { text-align: center; font-size: 0.7rem; color: #888; margin-bottom: 15px; letter-spacing: 2px; }
+        /* Display visual do Rank (ex: RANK E) */
+        #rank-display { 
+            text-align: center; 
+            font-size: 2.8rem; 
+            font-weight: 900; 
+            margin: 10px 0; 
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5); 
+        }
 
+        /* Título do Rank (ex: RECRUTA) */
+        #rank-title { 
+            text-align: center; 
+            font-size: 0.7rem; 
+            color: #888; 
+            margin-bottom: 15px; 
+            letter-spacing: 2px; 
+        }
+
+        /* Grade de estatísticas (Nível, XP, Combo) */
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stat-box { background: var(--system-card); padding: 10px; border-radius: 4px; font-size: 0.7rem; border: 1px solid #333; text-align: center;}
+        .stat-box { 
+            background: var(--system-card); 
+            padding: 10px; 
+            border-radius: 4px; 
+            font-size: 0.7rem; 
+            border: 1px solid #333; 
+            text-align: center;
+        }
 
-        .quest-item { background: rgba(255, 255, 255, 0.03); margin-bottom: 8px; padding: 12px; border-left: 4px solid var(--system-blue); cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
-        .quest-item.completed { border-left-color: var(--success-green); opacity: 0.3; text-decoration: line-through; }
+        /* Itens da lista de exercícios (Quests) */
+        .quest-item { 
+            background: rgba(255, 255, 255, 0.03); 
+            margin-bottom: 8px; 
+            padding: 12px; 
+            border-left: 4px solid var(--system-blue); 
+            cursor: pointer; 
+            font-size: 0.8rem; 
+            transition: 0.2s; 
+        }
 
-        .btn-main { background: var(--system-blue); color: black; border: none; width: 100%; padding: 15px; font-weight: bold; cursor: pointer; letter-spacing: 2px; margin-top: 10px;}
-        .btn-reset { background: none; border: none; color: #444; width: 100%; padding: 8px; cursor: pointer; font-size: 0.55rem; margin-top: 15px; text-decoration: underline;}
+        /* Estado do item quando clicado (concluído) */
+        .quest-item.completed { 
+            border-left-color: var(--success-green); 
+            opacity: 0.3; 
+            text-decoration: line-through; 
+        }
+
+        /* Botão principal de finalizar */
+        .btn-main { 
+            background: var(--system-blue); 
+            color: black; 
+            border: none; 
+            width: 100%; 
+            padding: 15px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            letter-spacing: 2px; 
+            margin-top: 10px;
+        }
+
+        /* Botão discreto de reset */
+        .btn-reset { 
+            background: none; 
+            border: none; 
+            color: #444; 
+            width: 100%; 
+            padding: 8px; 
+            cursor: pointer; 
+            font-size: 0.55rem; 
+            margin-top: 15px; 
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -88,7 +179,9 @@
 
     <div class="audio-player">
         <div style="font-size: 0.55rem; color: var(--system-blue); margin-bottom: 8px;">TRILHA SONORA: ON</div>
-        <div id="player-container" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px; background: #000;"><div id="player"></div></div>
+        <div id="player-container" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px; background: #000;">
+            <div id="player"></div>
+        </div>
         <div class="player-controls">
             <button class="control-btn" onclick="prevVideo()">⏮</button>
             <button class="control-btn" onclick="playVideo()">PLAY / PAUSE</button>
@@ -132,25 +225,49 @@
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
+
 <script>
+    // --- 1. CONFIGURAÇÃO DO PLAYER DO YOUTUBE ---
     let player;
+
+    // Função padrão da API: Cria o player de vídeo
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
-            height: '60', width: '100%',
-            playerVars: { 'listType': 'playlist', 'list': 'RDr2yMWqNG7rk', 'enablejsapi': 1, 'origin': window.location.origin },
+            height: '60', 
+            width: '100%',
+            playerVars: { 
+                'listType': 'playlist', 
+                'list': 'RDr2yMWqNG7rk', // ID da playlist do YouTube
+                'enablejsapi': 1, 
+                'origin': window.location.origin 
+            },
             events: { 'onReady': onPlayerReady }
         });
     }
+
+    // Ações ao carregar o player
     function onPlayerReady(event) { console.log("Áudio: Ativo"); }
-    function playVideo() { if (!player) return; const s = player.getPlayerState(); s == 1 ? player.pauseVideo() : player.playVideo(); }
+
+    // Alternar entre tocar e pausar
+    function playVideo() { 
+        if (!player) return; 
+        const s = player.getPlayerState(); 
+        s == 1 ? player.pauseVideo() : player.playVideo(); 
+    }
+
+    // Funções de Próximo e Anterior
     function nextVideo() { if(player) player.nextVideo(); }
     function prevVideo() { if(player) player.previousVideo(); }
 
+
+    // --- 2. GERENCIAMENTO DE DADOS (LOCAL STORAGE) ---
+    // Recupera dados salvos no navegador ou inicia novos valores se for a primeira vez
     let xp = localStorage.getItem('xp') ? parseInt(localStorage.getItem('xp')) : 0;
     let lvl = localStorage.getItem('lvl') ? parseInt(localStorage.getItem('lvl')) : 1;
     let streak = localStorage.getItem('streak') ? parseInt(localStorage.getItem('streak')) : 0;
     let lastDate = localStorage.getItem('lastDate');
 
+    // Banco de Dados de Exercícios por Rank
     const quests = {
         E: ["- 10 FLEXÕES", "- 10 AGACHAMENTOS", "- 10 ABDOMINAIS", "- 1 MIN ALONGAMENTO"],
         D: ["- 15 FLEXÕES LARGAS", "- 20 AGACHAMENTOS", "- 20 ABDOMINAIS INFRA", "- 40 SEG. PRANCHA"],
@@ -160,53 +277,125 @@
         S: ["- 5 FLEXÕES 1 BRAÇO", "- 10 AGACH. 1 PERNA", "- 50 ABDOMINAIS INFRA", "- 3 MIN PRANCHA"]
     };
 
+    // --- 3. FUNÇÕES DE ATUALIZAÇÃO DA TELA ---
+
     function updateDisplay() {
-        checkStreak();
+        checkStreak(); // Verifica se o jogador perdeu o dia
+        
+        // Atualiza os números na tela
         document.getElementById('xp').innerText = xp;
         document.getElementById('lvl').innerText = lvl;
         document.getElementById('streak').innerText = streak;
+        
         const rank = document.getElementById('rank-display');
         const title = document.getElementById('rank-title');
-        if(lvl < 5) { rank.innerText="RANK E"; rank.style.color="#00d4ff"; title.innerText="RECRUTA"; }
-        else if (lvl < 15) { rank.innerText="RANK D"; rank.style.color="#00ff88"; title.innerText="DESPERTADO"; }
-        else if (lvl < 30) { rank.innerText="RANK C"; rank.style.color="#ffaa00"; title.innerText="VETERANO"; }
-        else if (lvl < 50) { rank.innerText="RANK B"; rank.style.color="#ff00ff"; title.innerText="MESTRE"; }
-        else if (lvl < 80) { rank.innerText="RANK A"; rank.style.color="#ff4444"; title.innerText="COMANDANTE"; }
-        else { rank.innerText="RANK S"; rank.style.color="#ffffff"; rank.style.textShadow="0 0 20px #fff"; title.innerText="MONARCA"; }
-        loadQuests();
+
+        // Lógica de evolução de Ranks baseada no Nível (LVL)
+        if(lvl < 5) { 
+            rank.innerText="RANK E"; rank.style.color="#00d4ff"; title.innerText="RECRUTA"; 
+        } else if (lvl < 15) { 
+            rank.innerText="RANK D"; rank.style.color="#00ff88"; title.innerText="DESPERTADO"; 
+        } else if (lvl < 30) { 
+            rank.innerText="RANK C"; rank.style.color="#ffaa00"; title.innerText="VETERANO"; 
+        } else if (lvl < 50) { 
+            rank.innerText="RANK B"; rank.style.color="#ff00ff"; title.innerText="MESTRE"; 
+        } else if (lvl < 80) { 
+            rank.innerText="RANK A"; rank.style.color="#ff4444"; title.innerText="COMANDANTE"; 
+        } else { 
+            rank.innerText="RANK S"; 
+            rank.style.color="#ffffff"; 
+            rank.style.textShadow="0 0 20px #fff"; 
+            title.innerText="MONARCA"; 
+        }
+        
+        loadQuests(); // Carrega os exercícios corretos para o Rank
     }
 
+    // Verifica se passou mais de 1 dia desde o último treino
     function checkStreak() {
         if (lastDate) {
-            const today = new Date(); const last = new Date(lastDate);
-            today.setHours(0,0,0,0); last.setHours(0,0,0,0);
-            if (Math.floor((today - last) / (1000 * 3600 * 24)) > 1) { streak = 0; localStorage.setItem('streak', 0); }
+            const today = new Date(); 
+            const last = new Date(lastDate);
+            today.setHours(0,0,0,0); 
+            last.setHours(0,0,0,0);
+            
+            // Se a diferença for maior que 1 dia (86.400.000 ms), o combo reseta
+            if (Math.floor((today - last) / (1000 * 3600 * 24)) > 1) { 
+                streak = 0; 
+                localStorage.setItem('streak', 0); 
+            }
         }
     }
 
+    // Desenha a lista de exercícios na tela
     function loadQuests() {
-        const list = document.getElementById('quest-list'); list.innerHTML = "";
+        const list = document.getElementById('quest-list'); 
+        list.innerHTML = ""; // Limpa a lista antes de desenhar
+        
+        // Define qual chave do objeto 'quests' usar baseada no LVL
         let r = (lvl < 5) ? "E" : (lvl < 15 ? "D" : (lvl < 30 ? "C" : (lvl < 50 ? "B" : (lvl < 80 ? "A" : "S"))));
+        
+        // Cria cada linha de exercício
         quests[r].forEach(q => {
-            const div = document.createElement('div'); div.className = "quest-item"; div.innerText = q;
+            const div = document.createElement('div'); 
+            div.className = "quest-item"; 
+            div.innerText = q;
+            // Evento de clique: marca/desmarca o exercício
             div.onclick = function() { this.classList.toggle('completed'); };
             list.appendChild(div);
         });
     }
 
+    // --- 4. FUNÇÕES DE AÇÃO DO USUÁRIO ---
+
     function checkCompletion() {
+        // Conta quantos exercícios foram marcados
         const comp = document.querySelectorAll('.completed').length;
-        if(comp < document.querySelectorAll('.quest-item').length) { alert("SISTEMA: CUMPRA OS OBJETIVOS!"); return; }
+        const total = document.querySelectorAll('.quest-item').length;
+        
+        // Validação: precisa marcar tudo
+        if(comp < total) { 
+            alert("SISTEMA: CUMPRA OS OBJETIVOS!"); 
+            return; 
+        }
+        
+        // Validação: impede concluir mais de uma vez no mesmo dia
         const now = new Date();
-        if (lastDate && new Date(lastDate).toLocaleDateString() === now.toLocaleDateString()) { alert("VOLTE AMANHÃ!"); return; }
-        streak++; xp += 25;
-        if(xp >= 100) { xp = 0; lvl++; alert("LEVEL UP!"); }
+        if (lastDate && new Date(lastDate).toLocaleDateString() === now.toLocaleDateString()) { 
+            alert("O SISTEMA ESTÁ EM REPOUSO. VOLTE AMANHÃ!"); 
+            return; 
+        }
+
+        // Sucesso: Incrementa valores
+        streak++; 
+        xp += 25;
+
+        // Lógica de subir de nível
+        if(xp >= 100) { 
+            xp = 0; 
+            lvl++; 
+            alert("SISTEMA: VOCÊ SUBIU DE NÍVEL!"); 
+        }
+
+        // Salva os novos dados no navegador
         localStorage.setItem('lastDate', now.toISOString());
-        localStorage.setItem('xp', xp); localStorage.setItem('lvl', lvl); localStorage.setItem('streak', streak);
-        updateDisplay();
+        localStorage.setItem('xp', xp); 
+        localStorage.setItem('lvl', lvl); 
+        localStorage.setItem('streak', streak);
+        
+        alert("MISSÃO CONCLUÍDA!");
+        updateDisplay(); // Atualiza a interface
     }
 
-    function resetSystem() { if(confirm("RESETAR TUDO?")) { localStorage.clear(); location.reload(); } }
+    // Reseta todos os dados para começar do zero
+    function resetSystem() { 
+        if(confirm("ATENÇÃO: DESEJA APAGAR TODO O SEU PROGRESSO?")) { 
+            localStorage.clear(); 
+            location.reload(); 
+        } 
+    }
+
+    // Inicia o sistema ao abrir a página
     updateDisplay();
 </script>
 </body>
