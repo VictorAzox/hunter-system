@@ -1,54 +1,41 @@
-# hunter-system
-# ⚡ SISTEMA DE STATUS: HUNTER LEVELING
+# ⚔️ SISTEMA DE HUNTER: MONARCA DAS SOMBRAS
 
-![Hunter System](https://img.shields.io/badge/RANK-S_EVOLUTION-00d4ff?style=for-the-badge)
-![Status](https://img.shields.io/badge/STATUS-ATIVO-00ff88?style=for-the-badge)
+Este é um sistema de monitoramento de treino inspirado no universo de **Solo Leveling**. O projeto funciona como uma aplicação Full-Stack, permitindo que usuários (Hunters) registrem seus treinos, subam de nível e disputem o topo do Ranking Global.
 
-Este é um sistema de monitoramento de progresso físico inspirado em **Solo Leveling**, projetado para transformar a rotina de quem trabalha longas horas sentado em uma jornada de evolução constante.
+## 🚀 Funcionalidades Atuais
 
-## 📜 SOBRE O PROJETO
-O sistema utiliza **Gamificação Real** para incentivar a prática de exercícios físicos. À medida que você conclui suas missões diárias, você acumula XP, sobe de nível e desbloqueia novos Ranks de dificuldade.
+- **Identificação Única:** Sistema de "Despertar" que bloqueia nomes duplicados, garantindo que cada Hunter tenha sua identidade exclusiva.
+- **Progressão de Rank:** Evolução dinâmica de **Rank E até Rank S** baseada no nível do usuário.
+- **Ranking Global em Tempo Real:** Conexão bidirecional com **Firebase Firestore**, onde as mudanças no servidor refletem instantaneamente no navegador/celular.
+- **Sistema de Quests Dinâmicas:** Exercícios que mudam automaticamente conforme o seu Rank atual aumenta.
+- **Trilha Sonora Imersiva:** Player integrado com API do YouTube para tocar playlists épicas durante o treino.
+- **Penalidade por Falha:** Sistema que reseta seu "Combo" (Streak) caso você fique mais de 24 horas sem registrar uma missão.
 
-> "Erga-se. O treino de hoje é o que separa um Rank E de um Monarca."
+## 🛠️ Tecnologias Utilizadas
 
----
+- **Frontend:** HTML5, CSS3 (Custom Variables & Flexbox), JavaScript (ES6+).
+- **Backend/Database:** Google Firebase Firestore (NoSQL).
+- **Integrações:** YouTube IFrame Player API.
+- **Hospedagem:** GitHub Pages.
 
-## 🛠️ FUNCIONALIDADES DO SISTEMA
-* **Progressão de Ranks:** Evolua do Rank E (Recruta) até o Rank S (Monarca das Sombras).
-* **Banco de Dados de Exercícios:** Treinos que mudam dinamicamente conforme seu nível.
-* **Lógica de Streak:** O sistema detecta se você falhou um dia e reseta seu combo de dias seguidos.
-* **Trilha Sonora Integrada:** Playlist épica para aumentar o foco e a adrenalina.
-* **Anti-Cheat:** Bloqueio de múltiplas conclusões no mesmo dia (apenas 1 upgrade por ciclo de 24h).
-* **Persistência de Dados:** Todo o progresso é salvo no `localStorage` do seu navegador.
+## 📊 Estrutura de Progressão
 
----
+| Rank | Nível Necessário | Dificuldade |
+| :--- | :--- | :--- |
+| **E** | Nível 1 - 4 | Iniciante |
+| **D** | Nível 5 - 14 | Recruta |
+| **C** | Nível 15 - 29 | Combatente |
+| **B** | Nível 30 - 49 | Elite |
+| **A** | Nível 50 - 79 | Mestre |
+| **S** | Nível 80+ | Monarca |
 
-## 🏆 ESCALA DE PODER
-| Nível | Rank | Título | Foco do Treino |
-| :--- | :--- | :--- | :--- |
-| 01 - 04 | **E** | Recruta | Adaptação e Base |
-| 05 - 14 | **D** | Despertado | Fortalecimento |
-| 15 - 29 | **C** | Veterano | Resistência |
-| 30 - 49 | **B** | Mestre | Isometria e Volume |
-| 50 - 79 | **A** | Comandante | Explosão |
-| 80+ | **S** | Monarca | Elite / Unilateral |
+## ⚙️ Como o Sistema funciona (Lógica Técnica)
 
----
+1.  **Sincronização:** O site utiliza um "Listener" (`onSnapshot`) que monitora o banco de dados. Se o nível do Hunter for alterado manualmente no painel do Firebase, o site atualiza a interface sem necessidade de recarregar.
+2.  **Segurança:** Implementada trava de verificação assíncrona para evitar que dois usuários utilizem o mesmo ID de Hunter.
+3.  **Persistência:** Uso de `localStorage` para cache rápido e `Firestore` para armazenamento persistente na nuvem.
 
-## 🚀 COMO USAR
-1. Acesse o link do projeto (https://victorazox.github.io/hunter-system/).
-2. Dê o "Play" na trilha sonora para iniciar o despertar do seu Ki.
-3. Complete todos os objetivos da lista.
-4. Clique em **FINALIZAR MISSÃO** para registrar seu progresso.
-5. Não pule nenhum dia, ou seu combo será perdido!
+## ✒️ Autor
 
----
-
-## 💻 TECNOLOGIAS UTILIZADAS
-* **HTML5** (Estrutura)
-* **CSS3** (Interface estilo HUD)
-* **JavaScript** (Lógica de Rank, XP e Tempo)
-* **YouTube API** (Trilha Sonora)
-
----
-*Este sistema foi desenvolvido para uso pessoal. Lembre-se de respeitar os limites do seu corpo e consultar um médico se necessário.*
+Projeto desenvolvido como parte do treinamento de evolução de Hunter.
+*"Erga-se."*
