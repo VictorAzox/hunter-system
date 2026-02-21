@@ -19,89 +19,63 @@
             font-family: 'Segoe UI', Tahoma, sans-serif;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Alinhado ao topo para scroll */
             min-height: 100vh;
             margin: 0;
-            padding: 10px;
+            padding: 20px;
             text-transform: uppercase;
+            gap: 20px;
+            flex-wrap: wrap; /* Permite que as regras desçam no celular */
         }
 
+        /* JANELA PRINCIPAL */
         #system-window {
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             border: 2px solid var(--system-blue);
             background: rgba(0, 0, 0, 0.95);
             padding: 20px;
             box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
             border-radius: 8px;
-            max-height: 95vh;
-            overflow-y: auto;
         }
 
-        .header { border-bottom: 2px solid var(--system-blue); padding-bottom: 10px; margin-bottom: 15px; text-align: center; }
-        
+        /* PAINEL LATERAL DE REGRAS */
+        #info-panel {
+            width: 100%;
+            max-width: 300px;
+            background: rgba(22, 27, 34, 0.8);
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            line-height: 1.6;
+        }
+
+        .info-header { color: var(--system-blue); font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;}
+        .rule-item { margin-bottom: 12px; color: #bbb; }
+        .rule-item b { color: #eee; }
+
+        /* TABELA DE RANKS DENTRO DAS REGRAS */
+        .rank-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.65rem; }
+        .rank-table td { border: 1px solid #333; padding: 5px; }
+        .rank-table tr:nth-child(even) { background: rgba(255,255,255,0.03); }
+
         /* PLAYER DE MÚSICA */
-        .audio-player {
-            background: rgba(0, 212, 255, 0.05);
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            text-align: center;
-        }
+        .audio-player { background: rgba(0, 212, 255, 0.05); padding: 15px; border-radius: 5px; margin-bottom: 15px; border: 1px solid rgba(0, 212, 255, 0.3); text-align: center; }
+        .player-controls { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
+        .control-btn { background: none; border: 1px solid var(--system-blue); color: var(--system-blue); padding: 8px 12px; cursor: pointer; font-size: 0.9rem; border-radius: 3px; font-weight: bold; }
+        .control-btn:hover { background: var(--system-blue); color: black; }
 
-        .player-controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .control-btn {
-            background: none;
-            border: 1px solid var(--system-blue);
-            color: var(--system-blue);
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            border-radius: 3px;
-            transition: 0.3s;
-            font-weight: bold;
-        }
-
-        .control-btn:hover {
-            background: var(--system-blue);
-            color: black;
-        }
-
-        #rank-display { 
-            text-align: center; 
-            font-size: 2.8rem; 
-            font-weight: 900; 
-            margin: 10px 0; 
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-        }
-
+        #rank-display { text-align: center; font-size: 2.8rem; font-weight: 900; margin: 10px 0; text-shadow: 0 0 10px rgba(0, 212, 255, 0.5); }
         #rank-title { text-align: center; font-size: 0.7rem; color: #888; margin-bottom: 15px; letter-spacing: 2px; }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .stat-box { background: var(--system-card); padding: 10px; border-radius: 4px; font-size: 0.7rem; border: 1px solid #333; text-align: center;}
 
-        .quest-item { 
-            background: rgba(255, 255, 255, 0.03); 
-            margin-bottom: 8px; 
-            padding: 12px; 
-            border-left: 4px solid var(--system-blue); 
-            cursor: pointer; 
-            font-size: 0.8rem;
-            transition: 0.2s;
-        }
-
+        .quest-item { background: rgba(255, 255, 255, 0.03); margin-bottom: 8px; padding: 12px; border-left: 4px solid var(--system-blue); cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
         .quest-item.completed { border-left-color: var(--success-green); opacity: 0.3; text-decoration: line-through; }
 
         .btn-main { background: var(--system-blue); color: black; border: none; width: 100%; padding: 15px; font-weight: bold; cursor: pointer; letter-spacing: 2px; margin-top: 10px;}
-        .btn-main:hover { box-shadow: 0 0 15px var(--system-blue); }
-        
         .btn-reset { background: none; border: none; color: #444; width: 100%; padding: 8px; cursor: pointer; font-size: 0.55rem; margin-top: 15px; text-decoration: underline;}
     </style>
 </head>
@@ -114,11 +88,7 @@
 
     <div class="audio-player">
         <div style="font-size: 0.55rem; color: var(--system-blue); margin-bottom: 8px;">TRILHA SONORA: ON</div>
-        
-        <div id="player-container" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px; background: #000;">
-            <div id="player"></div>
-        </div>
-        
+        <div id="player-container" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px; background: #000;"><div id="player"></div></div>
         <div class="player-controls">
             <button class="control-btn" onclick="prevVideo()">⏮</button>
             <button class="control-btn" onclick="playVideo()">PLAY / PAUSE</button>
@@ -142,46 +112,40 @@
     <button class="btn-reset" onclick="resetSystem()">[ REINICIAR SISTEMA ]</button>
 </div>
 
-<script src="https://www.youtube.com/iframe_api"></script>
-
-<script>
-    // --- LÓGICA DO PLAYER (API YOUTUBE) ---
-    let player;
+<div id="info-panel">
+    <div class="info-header">[ INSTRUÇÕES DO SISTEMA ]</div>
+    <div class="rule-item"><b>1. MISSÃO DIÁRIA:</b> Você deve marcar todos os itens da lista para poder finalizar a missão.</div>
+    <div class="rule-item"><b>2. GANHO DE XP:</b> Cada dia concluído rende <b>25 XP</b>. Ao chegar em 100, você sobe de nível.</div>
+    <div class="rule-item"><b>3. PENALIDADE:</b> Se você não acessar o sistema por mais de 24h, seu <b>COMBO (Streak)</b> voltará a zero automaticamente.</div>
+    <div class="rule-item"><b>4. CONTROLE:</b> Use os botões do HUD para navegar na trilha sonora enquanto treina.</div>
     
+    <div class="info-header">[ ESCALA DE RANKS ]</div>
+    <table class="rank-table">
+        <tr><td>RANK E</td><td>LVL 01+</td></tr>
+        <tr><td>RANK D</td><td>LVL 05+</td></tr>
+        <tr><td>RANK C</td><td>LVL 15+</td></tr>
+        <tr><td>RANK B</td><td>LVL 30+</td></tr>
+        <tr><td>RANK A</td><td>LVL 50+</td></tr>
+        <tr><td>RANK S</td><td>LVL 80+</td></tr>
+    </table>
+    <p style="font-size: 0.6rem; color: #555; margin-top: 15px; text-align: center;">O DESPERTAR NÃO TEM VOLTA.</p>
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+    let player;
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
-            height: '60',
-            width: '100%',
-            playerVars: {
-                'listType': 'playlist',
-                'list': 'RDr2yMWqNG7rk', 
-                'enablejsapi': 1,
-                'origin': window.location.origin
-            },
-            events: {
-                'onReady': onPlayerReady
-            }
+            height: '60', width: '100%',
+            playerVars: { 'listType': 'playlist', 'list': 'RDr2yMWqNG7rk', 'enablejsapi': 1, 'origin': window.location.origin },
+            events: { 'onReady': onPlayerReady }
         });
     }
-
-    function onPlayerReady(event) {
-        console.log("Status: Áudio Conectado");
-    }
-
-    function playVideo() {
-        if (!player) return;
-        const state = player.getPlayerState();
-        if (state == 1) { // 1 = Tocando
-            player.pauseVideo();
-        } else {
-            player.playVideo();
-        }
-    }
-
+    function onPlayerReady(event) { console.log("Áudio: Ativo"); }
+    function playVideo() { if (!player) return; const s = player.getPlayerState(); s == 1 ? player.pauseVideo() : player.playVideo(); }
     function nextVideo() { if(player) player.nextVideo(); }
     function prevVideo() { if(player) player.previousVideo(); }
 
-    // --- LÓGICA DO SISTEMA DE STATUS ---
     let xp = localStorage.getItem('xp') ? parseInt(localStorage.getItem('xp')) : 0;
     let lvl = localStorage.getItem('lvl') ? parseInt(localStorage.getItem('lvl')) : 1;
     let streak = localStorage.getItem('streak') ? parseInt(localStorage.getItem('streak')) : 0;
@@ -201,51 +165,30 @@
         document.getElementById('xp').innerText = xp;
         document.getElementById('lvl').innerText = lvl;
         document.getElementById('streak').innerText = streak;
-        
         const rank = document.getElementById('rank-display');
         const title = document.getElementById('rank-title');
-
-        if(lvl < 5) { 
-            rank.innerText = "RANK E"; rank.style.color = "#00d4ff"; title.innerText = "RECRUTA"; 
-        } else if (lvl < 15) { 
-            rank.innerText = "RANK D"; rank.style.color = "#00ff88"; title.innerText = "DESPERTADO"; 
-        } else if (lvl < 30) { 
-            rank.innerText = "RANK C"; rank.style.color = "#ffaa00"; title.innerText = "VETERANO"; 
-        } else if (lvl < 50) { 
-            rank.innerText = "RANK B"; rank.style.color = "#ff00ff"; title.innerText = "MESTRE"; 
-        } else if (lvl < 80) { 
-            rank.innerText = "RANK A"; rank.style.color = "#ff4444"; title.innerText = "COMANDANTE"; 
-        } else { 
-            rank.innerText = "RANK S"; 
-            rank.style.color = "#ffffff"; 
-            rank.style.textShadow = "0 0 20px #fff";
-            title.innerText = "MONARCA DAS SOMBRAS"; 
-        }
+        if(lvl < 5) { rank.innerText="RANK E"; rank.style.color="#00d4ff"; title.innerText="RECRUTA"; }
+        else if (lvl < 15) { rank.innerText="RANK D"; rank.style.color="#00ff88"; title.innerText="DESPERTADO"; }
+        else if (lvl < 30) { rank.innerText="RANK C"; rank.style.color="#ffaa00"; title.innerText="VETERANO"; }
+        else if (lvl < 50) { rank.innerText="RANK B"; rank.style.color="#ff00ff"; title.innerText="MESTRE"; }
+        else if (lvl < 80) { rank.innerText="RANK A"; rank.style.color="#ff4444"; title.innerText="COMANDANTE"; }
+        else { rank.innerText="RANK S"; rank.style.color="#ffffff"; rank.style.textShadow="0 0 20px #fff"; title.innerText="MONARCA"; }
         loadQuests();
     }
 
     function checkStreak() {
         if (lastDate) {
-            const today = new Date();
-            const lastTreino = new Date(lastDate);
-            today.setHours(0,0,0,0);
-            lastTreino.setHours(0,0,0,0);
-            const diff = Math.floor((today - lastTreino) / (1000 * 3600 * 24));
-            if (diff > 1) {
-                streak = 0;
-                localStorage.setItem('streak', streak);
-            }
+            const today = new Date(); const last = new Date(lastDate);
+            today.setHours(0,0,0,0); last.setHours(0,0,0,0);
+            if (Math.floor((today - last) / (1000 * 3600 * 24)) > 1) { streak = 0; localStorage.setItem('streak', 0); }
         }
     }
 
     function loadQuests() {
-        const list = document.getElementById('quest-list');
-        list.innerHTML = "";
+        const list = document.getElementById('quest-list'); list.innerHTML = "";
         let r = (lvl < 5) ? "E" : (lvl < 15 ? "D" : (lvl < 30 ? "C" : (lvl < 50 ? "B" : (lvl < 80 ? "A" : "S"))));
         quests[r].forEach(q => {
-            const div = document.createElement('div');
-            div.className = "quest-item";
-            div.innerText = q;
+            const div = document.createElement('div'); div.className = "quest-item"; div.innerText = q;
             div.onclick = function() { this.classList.toggle('completed'); };
             list.appendChild(div);
         });
@@ -253,33 +196,18 @@
 
     function checkCompletion() {
         const comp = document.querySelectorAll('.completed').length;
-        const tot = document.querySelectorAll('.quest-item').length;
-        if(comp < tot) { alert("SISTEMA: CUMPRA TODOS OS OBJETIVOS!"); return; }
-        
+        if(comp < document.querySelectorAll('.quest-item').length) { alert("SISTEMA: CUMPRA OS OBJETIVOS!"); return; }
         const now = new Date();
-        if (lastDate && new Date(lastDate).toLocaleDateString() === now.toLocaleDateString()) {
-            alert("O SISTEMA ESTÁ EM REPOUSO. VOLTE AMANHÃ!"); return;
-        }
-
+        if (lastDate && new Date(lastDate).toLocaleDateString() === now.toLocaleDateString()) { alert("VOLTE AMANHÃ!"); return; }
         streak++; xp += 25;
         if(xp >= 100) { xp = 0; lvl++; alert("LEVEL UP!"); }
         localStorage.setItem('lastDate', now.toISOString());
-        localStorage.setItem('xp', xp);
-        localStorage.setItem('lvl', lvl);
-        localStorage.setItem('streak', streak);
-        alert("MISSÃO CONCLUÍDA!");
+        localStorage.setItem('xp', xp); localStorage.setItem('lvl', lvl); localStorage.setItem('streak', streak);
         updateDisplay();
     }
 
-    function resetSystem() {
-        if(confirm("ATENÇÃO: DESEJA RESETAR SEU STATUS?")) {
-            localStorage.clear();
-            location.reload();
-        }
-    }
-
+    function resetSystem() { if(confirm("RESETAR TUDO?")) { localStorage.clear(); location.reload(); } }
     updateDisplay();
 </script>
-
 </body>
 </html>
