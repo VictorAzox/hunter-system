@@ -113,8 +113,42 @@
 </div>
 
 <div id="info-panel">
-    <div class="info-header">[ DIRETRIZES ]</div>
-    <p style="font-size: 0.7rem; color:#888;">Complete os objetivos para subir de nível. O sistema sincroniza automaticamente com o Ranking Global via Firebase.</p>
+    <div class="info-header">[ GUIA DE SOBREVIVÊNCIA ]</div>
+    
+    <div style="font-size: 0.7rem; color:#bbb; margin-bottom: 15px;">
+        Bem-vindo ao Sistema, Hunter. Aqui estão suas diretrizes:
+    </div>
+
+    <table style="width: 100%; font-size: 0.65rem; border-collapse: collapse; color: #eee;">
+        <tr style="border-bottom: 1px solid #333;">
+            <th style="text-align: left; padding: 5px; color: var(--system-blue);">AÇÃO</th>
+            <th style="text-align: left; padding: 5px; color: var(--system-blue);">RESULTADO</th>
+        </tr>
+        <tr>
+            <td style="padding: 8px 5px;">CONCLUIR QUESTS</td>
+            <td style="padding: 8px 5px;">LIBERA O BOTÃO DE FINALIZAR</td>
+        </tr>
+        <tr style="background: rgba(0, 212, 255, 0.05);">
+            <td style="padding: 8px 5px;">FINALIZAR MISSÃO</td>
+            <td style="padding: 8px 5px;">GANHA +25 XP E +1 COMBO (DIÁRIO)</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 5px;">SUBIR DE NÍVEL</td>
+            <td style="padding: 8px 5px;">MUDA SEU RANK (E até S) NO RANKING</td>
+        </tr>
+        <tr style="color: var(--penalty-red);">
+            <td style="padding: 8px 5px;">FALHAR 24H</td>
+            <td style="padding: 8px 5px;">SEU COMBO (STREAK) VOLTA A ZERO</td>
+        </tr>
+    </table>
+
+    <div class="info-header" style="margin-top: 20px;">[ NOTA DO SISTEMA ]</div>
+    <p style="font-size: 0.65rem; color:#888; line-height: 1.4;">
+        O ranking é global. Seus dados são salvos na nuvem. Nomes repetidos são bloqueados para evitar roubo de identidade. 
+        <br><br>
+        <span style="color: var(--success-green);">● SYNC VERDE:</span> CONECTADO AO SERVIDOR.<br>
+        <span style="color: var(--penalty-red);">● SYNC VERMELHO:</span> ERRO DE CONEXÃO.
+    </p>
 </div>
 
 <script type="module">
@@ -315,3 +349,4 @@
 </script>
 </body>
 </html>
+
