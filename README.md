@@ -36,7 +36,7 @@ O sistema utiliza **Gamificação Real** para incentivar a prática de exercíci
 ---
 
 ## 🚀 COMO USAR
-1. Acesse o link do projeto (seu link do GitHub Pages aqui).
+1. Acesse o link do projeto (https://victorazox.github.io/hunter-system/).
 2. Dê o "Play" na trilha sonora para iniciar o despertar do seu Ki.
 3. Complete todos os objetivos da lista.
 4. Clique em **FINALIZAR MISSÃO** para registrar seu progresso.
