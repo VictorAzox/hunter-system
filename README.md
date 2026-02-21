@@ -2,6 +2,11 @@
 
 Este é um sistema de monitoramento de treino inspirado no universo de **Solo Leveling**. O projeto funciona como uma aplicação Full-Stack, permitindo que usuários (Hunters) registrem seus treinos, subam de nível e disputem o topo do Ranking Global.
 
+> **STATUS:** Sistema Online 🟢  
+> **ACESSE O PORTAL:** (https://victorazox.github.io/hunter-system/)
+
+---
+
 ## 🚀 Funcionalidades Atuais
 
 - **Identificação Única:** Sistema de "Despertar" que bloqueia nomes duplicados, garantindo que cada Hunter tenha sua identidade exclusiva.
