@@ -16,7 +16,7 @@
         body {
             background-color: var(--system-bg);
             color: white;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -40,7 +40,7 @@
 
         .header { border-bottom: 2px solid var(--system-blue); padding-bottom: 10px; margin-bottom: 15px; text-align: center; }
         
-        /* ESTILO DO NOVO PLAYER COM BOTÕES */
+        /* PLAYER DE MÚSICA */
         .audio-player {
             background: rgba(0, 212, 255, 0.05);
             padding: 15px;
@@ -61,11 +61,12 @@
             background: none;
             border: 1px solid var(--system-blue);
             color: var(--system-blue);
-            padding: 5px 10px;
+            padding: 8px 12px;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             border-radius: 3px;
             transition: 0.3s;
+            font-weight: bold;
         }
 
         .control-btn:hover {
@@ -73,12 +74,34 @@
             color: black;
         }
 
-        #rank-display { text-align: center; font-size: 2.8rem; font-weight: 900; margin: 10px 0; }
+        #rank-display { 
+            text-align: center; 
+            font-size: 2.8rem; 
+            font-weight: 900; 
+            margin: 10px 0; 
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        #rank-title { text-align: center; font-size: 0.7rem; color: #888; margin-bottom: 15px; letter-spacing: 2px; }
+
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .stat-box { background: var(--system-card); padding: 10px; border-radius: 4px; font-size: 0.7rem; border: 1px solid #333; text-align: center;}
-        .quest-item { background: rgba(255, 255, 255, 0.03); margin-bottom: 8px; padding: 12px; border-left: 4px solid var(--system-blue); cursor: pointer; font-size: 0.8rem; }
+
+        .quest-item { 
+            background: rgba(255, 255, 255, 0.03); 
+            margin-bottom: 8px; 
+            padding: 12px; 
+            border-left: 4px solid var(--system-blue); 
+            cursor: pointer; 
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+
         .quest-item.completed { border-left-color: var(--success-green); opacity: 0.3; text-decoration: line-through; }
-        .btn-main { background: var(--system-blue); color: black; border: none; width: 100%; padding: 15px; font-weight: bold; cursor: pointer; letter-spacing: 2px; }
+
+        .btn-main { background: var(--system-blue); color: black; border: none; width: 100%; padding: 15px; font-weight: bold; cursor: pointer; letter-spacing: 2px; margin-top: 10px;}
+        .btn-main:hover { box-shadow: 0 0 15px var(--system-blue); }
+        
         .btn-reset { background: none; border: none; color: #444; width: 100%; padding: 8px; cursor: pointer; font-size: 0.55rem; margin-top: 15px; text-decoration: underline;}
     </style>
 </head>
@@ -90,42 +113,51 @@
     </div>
 
     <div class="audio-player">
-        <div style="font-size: 0.55rem; color: var(--system-blue); margin-bottom: 8px;">BGM: CONTROLE DE TRILHA</div>
-        <iframe id="player" width="100%" height="0" 
-            src="https://www.youtube.com/embed/r2yMWqNG7rk?list=RDr2yMWqNG7rk&enablejsapi=1" 
-            style="border: none; display:none;">
-        </iframe>
+        <div style="font-size: 0.55rem; color: var(--system-blue); margin-bottom: 8px;">TRILHA SONORA: ON</div>
+        
+        <div id="player-container" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px; background: #000;">
+            <div id="player"></div>
+        </div>
         
         <div class="player-controls">
             <button class="control-btn" onclick="prevVideo()">⏮</button>
-            <button class="control-btn" onclick="playVideo()">▶/⏸</button>
+            <button class="control-btn" onclick="playVideo()">PLAY / PAUSE</button>
             <button class="control-btn" onclick="nextVideo()">⏭</button>
         </div>
-        <p style="font-size: 0.5rem; margin-top: 10px; color: #555;">Dê o primeiro Play para despertar o som</p>
     </div>
 
     <div id="rank-display">RANK E</div>
-    <div id="rank-title" style="text-align: center; font-size: 0.7rem; color: #888; margin-bottom: 15px;">RECRUTA</div>
+    <div id="rank-title">RECRUTA</div>
 
     <div class="stats-grid">
         <div class="stat-box">NÍVEL: <span id="lvl">1</span></div>
         <div class="stat-box">XP: <span id="xp">0</span>/100</div>
         <div class="stat-box">COMBO: <span id="streak">0</span> DIAS</div>
-        <div class="stat-box">ESTADO: NORMAL</div>
+        <div class="stat-box">ESTADO: <span style="color:var(--success-green)">NORMAL</span></div>
     </div>
 
     <div id="quest-list"></div>
-    <button class="btn-main" onclick="checkCompletion()" style="margin-top: 15px;">FINALIZAR MISSÃO</button>
+
+    <button class="btn-main" onclick="checkCompletion()">FINALIZAR MISSÃO</button>
     <button class="btn-reset" onclick="resetSystem()">[ REINICIAR SISTEMA ]</button>
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
-    // LÓGICA DO PLAYER
+    // --- LÓGICA DO PLAYER (API YOUTUBE) ---
     let player;
+    
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
+            height: '60',
+            width: '100%',
+            playerVars: {
+                'listType': 'playlist',
+                'list': 'RDr2yMWqNG7rk', 
+                'enablejsapi': 1,
+                'origin': window.location.origin
+            },
             events: {
                 'onReady': onPlayerReady
             }
@@ -133,18 +165,23 @@
     }
 
     function onPlayerReady(event) {
-        // Player está pronto
+        console.log("Status: Áudio Conectado");
     }
 
     function playVideo() {
+        if (!player) return;
         const state = player.getPlayerState();
-        if (state == 1) { player.pauseVideo(); } else { player.playVideo(); }
+        if (state == 1) { // 1 = Tocando
+            player.pauseVideo();
+        } else {
+            player.playVideo();
+        }
     }
 
-    function nextVideo() { player.nextVideo(); }
-    function prevVideo() { player.previousVideo(); }
+    function nextVideo() { if(player) player.nextVideo(); }
+    function prevVideo() { if(player) player.previousVideo(); }
 
-    // --- O RESTANTE DA LÓGICA DE STATUS CONTINUA IGUAL ---
+    // --- LÓGICA DO SISTEMA DE STATUS ---
     let xp = localStorage.getItem('xp') ? parseInt(localStorage.getItem('xp')) : 0;
     let lvl = localStorage.getItem('lvl') ? parseInt(localStorage.getItem('lvl')) : 1;
     let streak = localStorage.getItem('streak') ? parseInt(localStorage.getItem('streak')) : 0;
@@ -160,17 +197,45 @@
     };
 
     function updateDisplay() {
+        checkStreak();
         document.getElementById('xp').innerText = xp;
         document.getElementById('lvl').innerText = lvl;
         document.getElementById('streak').innerText = streak;
+        
         const rank = document.getElementById('rank-display');
-        if(lvl < 5) { rank.innerText = "RANK E"; rank.style.color = "#00d4ff"; }
-        else if (lvl < 15) { rank.innerText = "RANK D"; rank.style.color = "#00ff88"; }
-        else if (lvl < 30) { rank.innerText = "RANK C"; rank.style.color = "#ffaa00"; }
-        else if (lvl < 50) { rank.innerText = "RANK B"; rank.style.color = "#ff00ff"; }
-        else if (lvl < 80) { rank.innerText = "RANK A"; rank.style.color = "#ff4444"; }
-        else { rank.innerText = "RANK S"; rank.style.color = "#ffffff"; }
+        const title = document.getElementById('rank-title');
+
+        if(lvl < 5) { 
+            rank.innerText = "RANK E"; rank.style.color = "#00d4ff"; title.innerText = "RECRUTA"; 
+        } else if (lvl < 15) { 
+            rank.innerText = "RANK D"; rank.style.color = "#00ff88"; title.innerText = "DESPERTADO"; 
+        } else if (lvl < 30) { 
+            rank.innerText = "RANK C"; rank.style.color = "#ffaa00"; title.innerText = "VETERANO"; 
+        } else if (lvl < 50) { 
+            rank.innerText = "RANK B"; rank.style.color = "#ff00ff"; title.innerText = "MESTRE"; 
+        } else if (lvl < 80) { 
+            rank.innerText = "RANK A"; rank.style.color = "#ff4444"; title.innerText = "COMANDANTE"; 
+        } else { 
+            rank.innerText = "RANK S"; 
+            rank.style.color = "#ffffff"; 
+            rank.style.textShadow = "0 0 20px #fff";
+            title.innerText = "MONARCA DAS SOMBRAS"; 
+        }
         loadQuests();
+    }
+
+    function checkStreak() {
+        if (lastDate) {
+            const today = new Date();
+            const lastTreino = new Date(lastDate);
+            today.setHours(0,0,0,0);
+            lastTreino.setHours(0,0,0,0);
+            const diff = Math.floor((today - lastTreino) / (1000 * 3600 * 24));
+            if (diff > 1) {
+                streak = 0;
+                localStorage.setItem('streak', streak);
+            }
+        }
     }
 
     function loadQuests() {
@@ -189,25 +254,32 @@
     function checkCompletion() {
         const comp = document.querySelectorAll('.completed').length;
         const tot = document.querySelectorAll('.quest-item').length;
-        if(comp < tot) { alert("SISTEMA: TAREFAS PENDENTES!"); return; }
+        if(comp < tot) { alert("SISTEMA: CUMPRA TODOS OS OBJETIVOS!"); return; }
+        
         const now = new Date();
         if (lastDate && new Date(lastDate).toLocaleDateString() === now.toLocaleDateString()) {
-            alert("SISTEMA EM REPOUSO. VOLTE AMANHÃ!"); return;
+            alert("O SISTEMA ESTÁ EM REPOUSO. VOLTE AMANHÃ!"); return;
         }
+
         streak++; xp += 25;
         if(xp >= 100) { xp = 0; lvl++; alert("LEVEL UP!"); }
         localStorage.setItem('lastDate', now.toISOString());
         localStorage.setItem('xp', xp);
         localStorage.setItem('lvl', lvl);
         localStorage.setItem('streak', streak);
+        alert("MISSÃO CONCLUÍDA!");
         updateDisplay();
     }
 
     function resetSystem() {
-        if(confirm("Deseja apagar tudo?")) { localStorage.clear(); location.reload(); }
+        if(confirm("ATENÇÃO: DESEJA RESETAR SEU STATUS?")) {
+            localStorage.clear();
+            location.reload();
+        }
     }
 
     updateDisplay();
 </script>
+
 </body>
 </html>
