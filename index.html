@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA: MONARCA DAS SOMBRAS - RANKING GLOBAL</title>
+    <title>SISTEMA: MONARCA DAS SOMBRAS - V6.0</title>
+    
     <style>
-        /* --- CONFIGURAÇÕES VISUAIS (CSS) --- */
+        /* --- [1] PALETA DE CORES E VARIÁVEIS --- */
         :root {
-            --system-blue: #00d4ff;     /* Azul neon do Sistema */
-            --system-bg: #0a0a0c;       /* Fundo escuro */
-            --system-card: #161b22;     /* Cinza dos cards */
-            --penalty-red: #ff4444;     /* Cor de alerta/erro */
-            --success-green: #00ff88;   /* Cor de missão concluída */
-            --gold: #ffcc00;            /* Cor do Top 1 do Ranking */
+            --system-blue: #00d4ff;     /* Azul neon característico do Sistema */
+            --system-bg: #0a0a0c;       /* Fundo quase preto */
+            --system-card: #161b22;     /* Cinza escuro para os quadros */
+            --penalty-red: #ff4444;     /* Vermelho para alertas/falhas */
+            --success-green: #00ff88;   /* Verde para missões completas */
+            --gold: #ffcc00;            /* Destaque para o Top 1 do Ranking */
         }
 
+        /* --- [2] DESIGN GERAL --- */
         body {
             background-color: var(--system-bg);
             color: white;
@@ -25,12 +27,12 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
-            text-transform: uppercase; /* Estilo Solo Leveling: Tudo em maiúsculo */
+            text-transform: uppercase; /* Estilo Solo Leveling: Tudo maiúsculo */
             gap: 20px;
             flex-wrap: wrap;
         }
 
-        /* Estilo das Janelas do Sistema */
+        /* Estilo das janelas flutuantes */
         #system-window, #info-panel, #ranking-window {
             width: 100%;
             max-width: 380px;
@@ -44,30 +46,27 @@
         .header { border-bottom: 2px solid var(--system-blue); padding-bottom: 10px; margin-bottom: 15px; text-align: center; }
         .info-header { color: var(--system-blue); font-weight: bold; margin-top: 15px; margin-bottom: 10px; border-bottom: 1px solid #333; }
 
-        /* Player de Música */
+        /* Estilo do Player de Áudio YouTube */
         .audio-player { background: rgba(0, 212, 255, 0.05); padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid rgba(0, 212, 255, 0.3); text-align: center; }
         .player-controls { display: flex; justify-content: center; gap: 10px; margin-top: 5px; }
         .control-btn { background: none; border: 1px solid var(--system-blue); color: var(--system-blue); padding: 5px 10px; cursor: pointer; font-size: 0.8rem; border-radius: 3px; }
-        .control-btn:hover { background: var(--system-blue); color: black; }
 
-        /* Status e Grades */
+        /* Painel de Status (Nível e XP) */
         #rank-display { text-align: center; font-size: 2.5rem; font-weight: 900; margin: 10px 0; text-shadow: 0 0 10px var(--system-blue); }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .stat-box { background: var(--system-card); padding: 10px; border-radius: 4px; font-size: 0.7rem; border: 1px solid #333; text-align: center;}
 
-        /* Itens de Missão (Quests) */
+        /* Estilo das Missões (Quests) */
         .quest-item { background: rgba(255, 255, 255, 0.03); margin-bottom: 8px; padding: 12px; border-left: 4px solid var(--system-blue); cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
         .quest-item.completed { border-left-color: var(--success-green); opacity: 0.3; text-decoration: line-through; }
 
-        /* Lista do Ranking Global */
+        /* Estilo da Lista do Ranking */
         .ranking-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #222; font-size: 0.7rem; }
         .ranking-item:first-child { color: var(--gold); border: 1px solid var(--gold); background: rgba(255, 204, 0, 0.05); }
 
-        /* Botões */
         .btn-main { background: var(--system-blue); color: black; border: none; width: 100%; padding: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; letter-spacing: 2px; }
-        .btn-main:disabled { background: #444; cursor: not-allowed; }
         
-        /* Tela de Identificação (Login) */
+        /* Tela de Bloqueio para Nome */
         #name-setup { position: fixed; top:0; left:0; width:100%; height:100%; background: #000; z-index:999; display:flex; flex-direction:column; justify-content:center; align-items:center; }
         input { background: #111; border: 1px solid var(--system-blue); color: white; padding: 12px; text-align: center; margin: 15px; width: 250px; font-size: 1rem; text-transform: uppercase; }
     </style>
@@ -75,14 +74,13 @@
 <body>
 
 <div id="name-setup" style="display: none;">
-    <p style="letter-spacing: 3px;">DIGITE SEU NOME DE HUNTER:</p>
-    <input type="text" id="hunter-name-input" maxlength="15" placeholder="EX: SUNG_JINWOO">
-    <button class="btn-main" onclick="saveHunterName()" style="width: 250px;">REIVINDICAR IDENTIDADE</button>
-    <p id="setup-msg" style="font-size: 0.6rem; margin-top: 10px; color: var(--penalty-red);"></p>
+    <p style="letter-spacing: 3px;">IDENTIFIQUE-SE, HUNTER:</p>
+    <input type="text" id="hunter-name-input" maxlength="15" placeholder="NOME DO HUNTER">
+    <button class="btn-main" onclick="saveHunterName()">DESPERTAR</button>
 </div>
 
 <div id="system-window">
-    <div class="header"><h2 style="margin:0; font-size: 0.75rem; color: var(--system-blue);">[ JANELA DE STATUS ]</h2></div>
+    <div class="header"><h2 style="margin:0; font-size: 0.75rem; color: var(--system-blue);">[ STATUS DO MONARCA ]</h2></div>
     
     <div class="audio-player">
         <div id="player"></div>
@@ -94,41 +92,37 @@
     </div>
 
     <div id="rank-display">RANK E</div>
-    <div id="hunter-label" style="text-align:center; color: var(--system-blue); font-size: 0.8rem; margin-bottom: 10px; letter-spacing: 3px;">---</div>
+    <div id="hunter-label" style="text-align:center; color: var(--system-blue); font-size: 0.8rem; margin-bottom: 10px;">---</div>
 
     <div class="stats-grid">
         <div class="stat-box">NÍVEL: <span id="lvl">1</span></div>
         <div class="stat-box">XP: <span id="xp">0</span>/100</div>
         <div class="stat-box">COMBO: <span id="streak">0</span> DIAS</div>
-        <div class="stat-box">SYNC: <span id="sync-icon" title="Status de Sincronização" style="color:red; font-size: 1.2rem;">●</span></div>
+        <div class="stat-box">SYNC: <span id="sync-icon" style="color:red; font-size: 1.2rem;">●</span></div>
     </div>
 
     <div id="quest-list"></div>
 
     <button class="btn-main" onclick="checkCompletion()">FINALIZAR MISSÃO</button>
-    <button onclick="resetSystem()" style="background:none; border:none; color:#333; width:100%; font-size:0.6rem; margin-top:15px; cursor:pointer; text-decoration: underline;">[ REINICIALIZAR DADOS DO SISTEMA ]</button>
+    <button onclick="resetSystem()" style="background:none; border:none; color:#333; width:100%; font-size:0.6rem; margin-top:15px; cursor:pointer;">[ REINICIAR SISTEMA LOCAL ]</button>
 </div>
 
 <div id="ranking-window">
-    <div class="info-header">[ TOP 10 HUNTERS GLOBAIS ]</div>
-    <div id="global-rank-list">Sincronizando com o servidor...</div>
+    <div class="info-header">[ RANKING GLOBAL DE HUNTERS ]</div>
+    <div id="global-rank-list">Conectando...</div>
 </div>
 
 <div id="info-panel">
     <div class="info-header">[ DIRETRIZES ]</div>
-    <p style="font-size: 0.7rem; color:#888; line-height: 1.5;">
-        1. Complete todos os exercícios do seu Rank.<br>
-        2. "Finalizar Missão" envia seus dados para o ranking global.<br>
-        3. Falhar por mais de 24h resulta na perda total do combo.<br>
-        4. O sistema não permite nomes duplicados.
-    </p>
+    <p style="font-size: 0.7rem; color:#888;">Complete os objetivos para subir de nível. O sistema sincroniza automaticamente com o Ranking Global via Firebase.</p>
 </div>
 
 <script type="module">
+    // Importando as ferramentas do Google Firebase
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // Suas chaves de conexão vinculadas ao huntersystem-95e44
+    // Configuração de acesso ao seu banco de dados
     const firebaseConfig = {
         apiKey: "AIzaSyBP0TLTOXxaiW9Aq5f5twEEsoy9MZO8SBk",
         authDomain: "huntersystem-95e44.firebaseapp.com",
@@ -138,93 +132,87 @@
         appId: "1:921341713101:web:8c26196804f72169ac2784"
     };
 
-    // Inicializa o Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     let hunterName = localStorage.getItem('hunterName');
     
-    // Verifica se o usuário já tem nome salvo
+    // Se o Hunter não tem nome, abre a tela de login
     if (!hunterName) {
         document.getElementById('name-setup').style.display = 'flex';
     } else {
         document.getElementById('hunter-label').innerText = hunterName;
-        setTimeout(() => syncToCloud(), 1000); 
     }
 
-    // Função para Salvar Nome com Trava de Duplicidade
+    // Função para validar e salvar o nome do Hunter
     window.saveHunterName = async () => {
         const input = document.getElementById('hunter-name-input');
         const btn = document.querySelector('#name-setup .btn-main');
         const name = input.value.trim().toUpperCase();
 
-        if (name.length < 3) {
-            alert("SISTEMA: NOME MUITO CURTO!");
-            return;
-        }
-
-        btn.innerText = "VERIFICANDO NO SISTEMA...";
+        if (name.length < 3) return alert("NOME MUITO CURTO!");
         btn.disabled = true;
 
         try {
+            // Verifica no banco se esse nome já existe (Trava de Duplicidade)
             const docRef = doc(db, "hunters", name);
             const docSnap = await getDoc(docRef);
-
+            
             if (docSnap.exists()) {
-                alert("ALERTA: ESTE NOME JÁ PERTENCE A OUTRO HUNTER!");
-                btn.innerText = "REIVINDICAR IDENTIDADE";
+                alert("ESTE NOME JÁ FOI REIVINDICADO!");
                 btn.disabled = false;
             } else {
                 localStorage.setItem('hunterName', name);
                 location.reload();
             }
-        } catch (e) {
-            alert("ERRO DE CONEXÃO.");
-            btn.disabled = false;
-        }
+        } catch (e) { alert("ERRO NA REDE."); btn.disabled = false; }
     };
 
-    // Envia Nível e Streak para o Ranking
-    async function syncToCloud() {
-        if (!hunterName) return;
-        const lvl = parseInt(localStorage.getItem('lvl')) || 1;
-        const streak = parseInt(localStorage.getItem('streak')) || 0;
-        try {
-            await setDoc(doc(db, "hunters", hunterName), {
-                name: hunterName, 
-                level: lvl, 
-                streak: streak, 
-                lastUpdate: new Date()
-            });
-            document.getElementById('sync-icon').style.color = "#00ff88"; // Sync Verde = Sucesso
-        } catch (e) { 
-            console.error(e); 
-            document.getElementById('sync-icon').style.color = "red";
-        }
-    }
-
-    // Escuta mudanças no Ranking em tempo real
+    // ESCUTA O RANKING EM TEMPO REAL (Se mudar no Firebase, muda no celular)
     const q = query(collection(db, "hunters"), orderBy("level", "desc"), orderBy("streak", "desc"), limit(10));
     onSnapshot(q, (snapshot) => {
         const list = document.getElementById('global-rank-list');
         list.innerHTML = "";
         snapshot.forEach((doc) => {
             const d = doc.data();
+            
+            // SE O NOME NO BANCO FOR O SEU:
+            if (d.name === hunterName) {
+                const localLvl = parseInt(localStorage.getItem('lvl')) || 1;
+                const localStreak = parseInt(localStorage.getItem('streak')) || 0;
+                
+                // Se o banco tiver um valor diferente, atualiza o navegador (Bidirecional)
+                if(d.level !== localLvl || d.streak !== localStreak) {
+                    localStorage.setItem('lvl', d.level);
+                    localStorage.setItem('streak', d.streak);
+                    if(window.updateDisplay) window.updateDisplay();
+                }
+                document.getElementById('sync-icon').style.color = "#00ff88"; // Sync ativo
+            }
             list.innerHTML += `<div class="ranking-item"><span>${d.name}</span><span>LVL ${d.level} | 🔥 ${d.streak}</span></div>`;
         });
     });
 
-    // Torna a função de sync acessível globalmente
-    window.syncToCloud = syncToCloud;
+    // Função para enviar os dados locais para o servidor do Google
+    window.syncToCloud = async () => {
+        if (!hunterName) return;
+        const lvl = parseInt(localStorage.getItem('lvl')) || 1;
+        const streak = parseInt(localStorage.getItem('streak')) || 0;
+        try {
+            await setDoc(doc(db, "hunters", hunterName), {
+                name: hunterName, level: lvl, streak: streak, lastUpdate: new Date()
+            });
+        } catch (e) { console.error("Falha ao sincronizar:", e); }
+    };
 </script>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-    // Configurações do YouTube
+    // Configurações do Player de Trilha Sonora
     let player;
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
-            height: '0', width: '0', // Invisível, apenas áudio
+            height: '0', width: '0',
             playerVars: { 'listType': 'playlist', 'list': 'RDr2yMWqNG7rk', 'enablejsapi': 1 },
         });
     }
@@ -232,7 +220,7 @@
     function nextVideo() { player.nextVideo(); }
     function prevVideo() { player.previousVideo(); }
 
-    // Banco de Dados de Exercícios
+    // Tabela de Exercícios por Rank
     const quests = {
         E: ["- 10 FLEXÕES", "- 10 AGACHAMENTOS", "- 10 ABDOMINAIS", "- 1 MIN ALONGAMENTO"],
         D: ["- 15 FLEXÕES LARGAS", "- 20 AGACHAMENTOS", "- 20 ABDOMINAIS INFRA", "- 40 SEG. PRANCHA"],
@@ -242,14 +230,14 @@
         S: ["- 5 FLEXÕES 1 BRAÇO", "- 10 AGACH. 1 PERNA", "- 50 ABDOMINAIS INFRA", "- 3 MIN PRANCHA"]
     };
 
-    // Atualiza a interface com os dados do LocalStorage
+    // Atualiza o Visual do site com os dados salvos
     function updateDisplay() {
         let xp = parseInt(localStorage.getItem('xp')) || 0;
         let lvl = parseInt(localStorage.getItem('lvl')) || 1;
         let streak = parseInt(localStorage.getItem('streak')) || 0;
         let lastDate = localStorage.getItem('lastDate');
 
-        // Lógica de Penalidade: Perda de Streak
+        // Lógica de Penalidade: se passar mais de 24h sem treinar, perde o Combo
         if(lastDate) {
             const diff = Math.floor((new Date() - new Date(lastDate)) / (1000 * 3600 * 24));
             if(diff > 1) { streak = 0; localStorage.setItem('streak', 0); }
@@ -259,9 +247,9 @@
         document.getElementById('lvl').innerText = lvl;
         document.getElementById('streak').innerText = streak;
         
+        // Define o Rank e a cor baseada no Nível
         const rDisplay = document.getElementById('rank-display');
         let r = "E";
-        // Define Rank por Nível
         if(lvl < 5) { r="E"; rDisplay.style.color="#00d4ff"; }
         else if(lvl < 15) { r="D"; rDisplay.style.color="#00ff88"; }
         else if(lvl < 30) { r="C"; rDisplay.style.color="#ffaa00"; }
@@ -270,60 +258,59 @@
         else { r="S"; rDisplay.style.color="#fff"; }
         rDisplay.innerText = "RANK " + r;
 
-        // Gera a lista de Quests
+        // Limpa e reconstrói a lista de exercícios do Rank atual
         const qList = document.getElementById('quest-list');
         qList.innerHTML = "";
         quests[r].forEach(q => {
             const d = document.createElement('div');
             d.className = "quest-item"; d.innerText = q;
-            d.onclick = () => d.classList.toggle('completed');
+            d.onclick = () => d.classList.toggle('completed'); // Marca/Desmarca
             qList.appendChild(d);
         });
     }
 
-    // Finaliza a missão diária
+    // Expondo a função para ser usada pelo Firebase
+    window.updateDisplay = updateDisplay;
+
+    // Função que processa o final do treino
     function checkCompletion() {
         const total = document.querySelectorAll('.quest-item').length;
         const done = document.querySelectorAll('.completed').length;
         
-        if(done < total) return alert("SISTEMA: OBJETIVOS PENDENTES!");
+        // Verifica se todos os itens foram marcados
+        if(done < total) return alert("OBJETIVOS PENDENTES!");
         
+        // Trava para permitir apenas uma missão por dia
         const now = new Date();
         const last = localStorage.getItem('lastDate');
-        
-        // Bloqueio de 24h
         if(last && new Date(last).toLocaleDateString() === now.toLocaleDateString()) {
-            return alert("SISTEMA: MISSÃO DIÁRIA JÁ CONCLUÍDA.");
+            return alert("MISSÃO JÁ CONCLUÍDA HOJE!");
         }
 
         let xp = parseInt(localStorage.getItem('xp')) || 0;
         let lvl = parseInt(localStorage.getItem('lvl')) || 1;
         let streak = (parseInt(localStorage.getItem('streak')) || 0) + 1;
         
-        xp += 25; // Cada missão dá 25 de XP
-        if(xp >= 100) { xp = 0; lvl++; alert("SISTEMA: VOCÊ SUBIU DE NÍVEL!"); }
+        xp += 25; // Sobe 25 de XP por treino
+        if(xp >= 100) { xp = 0; lvl++; alert("LEVEL UP! VOCÊ DESPERTOU NOVOS PODERES."); }
 
+        // Salva os novos dados no navegador
         localStorage.setItem('xp', xp);
         localStorage.setItem('lvl', lvl);
         localStorage.setItem('streak', streak);
         localStorage.setItem('lastDate', now.toISOString());
         
-        // Dispara sincronização com o Firebase
+        // Sincroniza com o Google Firebase
         if(window.syncToCloud) window.syncToCloud();
         
         updateDisplay();
-        alert("MISSÃO CONCLUÍDA COM SUCESSO!");
+        alert("MISSÃO CONCLUÍDA! SEUS DADOS FORAM ENVIADOS AO RANKING.");
     }
 
-    // Função para resetar tudo
-    function resetSystem() { 
-        if(confirm("ATENÇÃO: DESEJA EXTERMINAR SEUS DADOS? ISSO NÃO AFETA O RANKING GLOBAL, APENAS SEU PROGRESSO LOCAL.")) { 
-            localStorage.clear(); 
-            location.reload(); 
-        } 
-    }
-
-    // Inicia a tela
+    // Reseta apenas o progresso local
+    function resetSystem() { if(confirm("RESETRAR DADOS LOCAIS? ISSO NÃO APAGA SEU NOME DO RANKING.")) { localStorage.clear(); location.reload(); } }
+    
+    // Inicia a tela ao carregar o site
     updateDisplay();
 </script>
 </body>
