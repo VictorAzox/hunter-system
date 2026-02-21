@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA: MONARCA DAS SOMBRAS</title>
+    <style>
+        /* CORES DO SISTEMA */
+        :root {
+            --system-blue: #00d4ff;
+            --system-bg: #0a0a0c;
+            --system-card: #161b22;
+            --penalty-red: #ff4444;
+            --success-green: #00ff88;
+            --rank-s-gold: #ffffff;
+        }
+
+        body {
+            background-color: var(--system-bg);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+            text-transform: uppercase;
+        }
+
+        #system-window {
+            width: 100%;
+            max-width: 420px;
+            border: 2px solid var(--system-blue);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+            border-radius: 8px;
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+
+        .header { border-bottom: 2px solid var(--system-blue); padding-bottom: 10px; margin-bottom: 15px; text-align: center; }
+        
+        /* PLAYER DE MÚSICA */
+        .audio-player {
+            background: rgba(0, 212, 255, 0.05);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        /* DISPLAY DE RANK COM TRANSIÇÃO DE CORES */
+        #rank-display { 
+            text-align: center; 
+            font-size: 2.8rem; 
+            font-weight: 900; 
+            transition: all 0.5s ease;
+            margin: 5px 0; 
+        }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .stat-box { background: var(--system-card); padding: 10px; border-radius: 4px; font-size: 0.7rem; border: 1px solid #333; text-align: center;}
+
+        /* LISTA DE EXERCÍCIOS */
+        .quest-item {
+            background: rgba(255, 255, 255, 0.03);
+            margin-bottom: 8px;
+            padding: 12px;
+            border-left: 4px solid var(--system-blue);
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.8rem;
+        }
+
+        .quest-item.completed { 
+            border-left-color: var(--success-green); 
+            opacity: 0.3; 
+            text-decoration: line-through; 
+        }
+
+        .progress-container { height: 8px; background: #222; margin: 15px 0 5px 0; border-radius: 4px; border: 1px solid #444; }
+        #progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--system-blue), var(--success-green)); transition: width 0.4s; }
+
+        .btn-main { background: var(--system-blue); color: black; border: none; width: 100%; padding: 15px; font-weight: bold; cursor: pointer; letter-spacing: 2px; margin-top: 10px; }
+        .btn-reset { background: none; border: none; color: #444; width: 100%; padding: 8px; cursor: pointer; font-size: 0.55rem; margin-top: 15px; text-decoration: underline;}
+    </style>
+</head>
+<body>
+
+<div id="system-window">
+    <div class="header">
+        <h2 style="margin:0; font-size: 0.75rem; color: var(--system-blue);">[ JANELA DE STATUS ]</h2>
+    </div>
+
+    <div class="audio-player">
+        <div style="font-size: 0.55rem; color: var(--system-blue); margin-bottom: 5px;">BGM: ELEVANDO O KI</div>
+        <iframe width="100%" height="60" 
+            src="https://www.youtube.com/embed/videoseries?list=RDr2yMWqNG7rk" 
+            title="Playlist Hunter" frameborder="0" 
+            allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture">
+        </iframe>
+    </div>
+
+    <div id="rank-display">RANK E</div>
+    <div id="rank-title" style="text-align: center; font-size: 0.7rem; color: #888; margin-bottom: 10px;">RECRUTA</div>
+
+    <div class="stats-grid">
+        <div class="stat-box">NÍVEL: <span id="lvl">1</span></div>
+        <div class="stat-box">XP: <span id="xp">0</span>/100</div>
+        <div class="stat-box">COMBO: <span id="streak">0</span> DIAS</div>
+        <div class="stat-box">ESTADO: <span style="color:var(--success-green)">NORMAL</span></div>
+    </div>
+
+    <div id="quest-list"></div>
+
+    <div class="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <button class="btn-main" onclick="checkCompletion()">FINALIZAR MISSÃO</button>
+
+    <div class="log-section" style="margin-top:20px; border-top: 1px dashed #444; padding-top:10px;">
+        <div style="font-size: 0.6rem; color: var(--system-blue); margin-bottom: 5px;">[ QUEST LOG ]</div>
+        <div id="quest-log" style="font-size: 0.6rem; color: #777; max-height: 80px; overflow-y: auto;"></div>
+    </div>
+
+    <button class="btn-reset" onclick="resetSystem()">[ REINICIAR SISTEMA ]</button>
+</div>
+
+<script>
+    // --- MEMÓRIA DO SISTEMA ---
+    let xp = localStorage.getItem('xp') ? parseInt(localStorage.getItem('xp')) : 0;
+    let lvl = localStorage.getItem('lvl') ? parseInt(localStorage.getItem('lvl')) : 1;
+    let streak = localStorage.getItem('streak') ? parseInt(localStorage.getItem('streak')) : 0;
+    let logs = JSON.parse(localStorage.getItem('logs')) || [];
+    let lastDate = localStorage.getItem('lastDate');
+
+    // --- BANCO DE DADOS DE EXERCÍCIOS (DO RANK E AO S) ---
+    const quests = {
+        E: ["- 10 FLEXÕES", "- 10 AGACHAMENTOS", "- 10 ABDOMINAIS", "- 1 MIN ALONGAMENTO"],
+        D: ["- 15 FLEXÕES LARGAS", "- 20 AGACHAMENTOS", "- 20 ABDOMINAIS INFRA", "- 40 SEG. PRANCHA"],
+        C: ["- 12 FLEXÕES DIAMANTE", "- 15 AGACH. EXPLOSIVO", "- 1 MIN PRANCHA", "- 10 REMADA CURVADA"],
+        B: ["- 20 FLEXÕES ARQUEIRO", "- 30 AGACHAMENTOS", "- 40 ABDOMINAIS", "- 1:30 MIN PRANCHA"],
+        A: ["- 10 FLEXÕES EXPLOSIVAS", "- 15 AGACH. BÚLGARO (CADA)", "- 1 MIN CANIVETE", "- 2 MIN PRANCHA"],
+        S: ["- 5 FLEXÕES 1 BRAÇO", "- 10 AGACH. 1 PERNA", "- 50 ABDOMINAIS INFRA", "- 3 MIN PRANCHA"]
+    };
+
+    // --- VERIFICA SE O DIA FOI PERDIDO ---
+    function checkStreak() {
+        if (lastDate) {
+            const today = new Date();
+            const lastTreino = new Date(lastDate);
+            today.setHours(0,0,0,0);
+            lastTreino.setHours(0,0,0,0);
+            const diffInDays = Math.floor((today - lastTreino) / (1000 * 3600 * 24));
+
+            if (diffInDays > 1) {
+                alert("PENALIDADE: VOCÊ FALTOU AO TREINO. COMBO RESETADO!");
+                streak = 0;
+                localStorage.setItem('streak', streak);
+            }
+        }
+    }
+
+    // --- ATUALIZA A INTERFACE E OS RANKS ---
+    function updateDisplay() {
+        checkStreak();
+        document.getElementById('xp').innerText = xp;
+        document.getElementById('lvl').innerText = lvl;
+        document.getElementById('streak').innerText = streak;
+        
+        const rank = document.getElementById('rank-display');
+        const title = document.getElementById('rank-title');
+
+        // Lógica de Cores e Ranks
+        if(lvl < 5) { 
+            rank.innerText = "RANK E"; rank.style.color = "#00d4ff"; title.innerText = "RECRUTA"; 
+        } else if (lvl < 15) { 
+            rank.innerText = "RANK D"; rank.style.color = "#00ff88"; title.innerText = "DESPERTADO"; 
+        } else if (lvl < 30) { 
+            rank.innerText = "RANK C"; rank.style.color = "#ffaa00"; title.innerText = "VETERANO"; 
+        } else if (lvl < 50) { 
+            rank.innerText = "RANK B"; rank.style.color = "#ff00ff"; title.innerText = "MESTRE DE ARMAS"; 
+        } else if (lvl < 80) { 
+            rank.innerText = "RANK A"; rank.style.color = "#ff4444"; title.innerText = "COMANDANTE"; 
+        } else { 
+            rank.innerText = "RANK S"; 
+            rank.style.color = "#ffffff"; 
+            rank.style.textShadow = "0 0 20px #fff, 0 0 30px #00d4ff";
+            title.innerText = "MONARCA DAS SOMBRAS"; 
+        }
+
+        loadQuests();
+        loadLogs();
+        updateProgressBar();
+    }
+
+    // --- GERA A LISTA DE TAREFAS ---
+    function loadQuests() {
+        const list = document.getElementById('quest-list');
+        list.innerHTML = "";
+        let r = (lvl < 5) ? "E" : (lvl < 15 ? "D" : (lvl < 30 ? "C" : (lvl < 50 ? "B" : (lvl < 80 ? "A" : "S"))));
+
+        quests[r].forEach(q => {
+            const div = document.createElement('div');
+            div.className = "quest-item";
+            div.innerText = q;
+            div.onclick = function() { this.classList.toggle('completed'); updateProgressBar(); };
+            list.appendChild(div);
+        });
+    }
+
+    function updateProgressBar() {
+        const comp = document.querySelectorAll('.completed').length;
+        const tot = document.querySelectorAll('.quest-item').length;
+        document.getElementById('progress-bar').style.width = (tot > 0 ? (comp / tot * 100) : 0) + "%";
+    }
+
+    // --- FINALIZA E SALVA ---
+    function checkCompletion() {
+        const comp = document.querySelectorAll('.completed').length;
+        const tot = document.querySelectorAll('.quest-item').length;
+        
+        if(comp < tot) { alert("SISTEMA: TAREFAS PENDENTES!"); return; }
+
+        const now = new Date();
+        if (lastDate && new Date(lastDate).toLocaleDateString() === now.toLocaleDateString()) {
+            alert("SISTEMA EM REPOUSO. VOLTE AMANHÃ!"); return;
+        }
+
+        logs.push(`${now.toLocaleDateString()} - LVL ${lvl} COMPLETO`);
+        if(logs.length > 10) logs.shift();
+        
+        streak++; xp += 25;
+        if(xp >= 100) { xp = 0; lvl++; alert("LEVEL UP!"); }
+
+        localStorage.setItem('lastDate', now.toISOString());
+        localStorage.setItem('xp', xp);
+        localStorage.setItem('lvl', lvl);
+        localStorage.setItem('streak', streak);
+        localStorage.setItem('logs', JSON.stringify(logs));
+        
+        alert("MISSÃO CONCLUÍDA!");
+        updateDisplay();
+    }
+
+    function loadLogs() {
+        document.getElementById('quest-log').innerHTML = logs.map(e => `<div>- ${e}</div>`).reverse().join('');
+    }
+
+    function resetSystem() {
+        if(confirm("Deseja apagar tudo?")) { localStorage.clear(); location.reload(); }
+    }
+
+    updateDisplay();
+</script>
+
+</body>
+</html>
