@@ -3,38 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA: MONARCA DAS SOMBRAS</title>
-    
+    <title>SISTEMA: MONARCA DAS SOMBRAS - RANKING GLOBAL</title>
     <style>
-        /* Variáveis de cores para facilitar mudanças globais no tema */
+        /* --- CONFIGURAÇÕES VISUAIS (CSS) --- */
         :root {
-            --system-blue: #00d4ff;     /* Azul neon padrão */
-            --system-bg: #0a0a0c;       /* Fundo quase preto */
-            --system-card: #161b22;     /* Cinza escuro dos cards */
-            --penalty-red: #ff4444;     /* Vermelho para alertas */
-            --success-green: #00ff88;   /* Verde para conclusões */
+            --system-blue: #00d4ff;     /* Azul neon do Sistema */
+            --system-bg: #0a0a0c;       /* Fundo escuro */
+            --system-card: #161b22;     /* Cinza dos cards */
+            --penalty-red: #ff4444;     /* Cor de alerta/erro */
+            --success-green: #00ff88;   /* Cor de missão concluída */
+            --gold: #ffcc00;            /* Cor do Top 1 do Ranking */
         }
 
-        /* Configurações gerais do corpo da página */
         body {
             background-color: var(--system-bg);
             color: white;
             font-family: 'Segoe UI', Tahoma, sans-serif;
             display: flex;
-            justify-content: center;    /* Centraliza horizontalmente */
-            align-items: flex-start;    /* Alinha ao topo para permitir rolagem */
+            justify-content: center;
+            align-items: flex-start;
             min-height: 100vh;
             margin: 0;
             padding: 20px;
-            text-transform: uppercase;  /* Força todos os textos em MAIÚSCULO */
-            gap: 20px;                  /* Espaço entre a janela e o painel de regras */
-            flex-wrap: wrap;            /* Faz o conteúdo "quebrar" para baixo no celular */
+            text-transform: uppercase; /* Estilo Solo Leveling: Tudo em maiúsculo */
+            gap: 20px;
+            flex-wrap: wrap;
         }
 
-        /* Container principal do sistema (Janela de Status) */
-        #system-window {
+        /* Estilo das Janelas do Sistema */
+        #system-window, #info-panel, #ranking-window {
             width: 100%;
-            max-width: 400px;
+            max-width: 380px;
             border: 2px solid var(--system-blue);
             background: rgba(0, 0, 0, 0.95);
             padding: 20px;
@@ -42,360 +41,289 @@
             border-radius: 8px;
         }
 
-        /* Painel de Instruções (Lateral no PC / Inferior no Celular) */
-        #info-panel {
-            width: 100%;
-            max-width: 300px;
-            background: rgba(22, 27, 34, 0.8);
-            border: 1px solid #333;
-            padding: 20px;
-            border-radius: 8px;
-            font-size: 0.75rem;
-            line-height: 1.6;
-        }
+        .header { border-bottom: 2px solid var(--system-blue); padding-bottom: 10px; margin-bottom: 15px; text-align: center; }
+        .info-header { color: var(--system-blue); font-weight: bold; margin-top: 15px; margin-bottom: 10px; border-bottom: 1px solid #333; }
 
-        /* Títulos internos dos painéis */
-        .info-header { 
-            color: var(--system-blue); 
-            font-weight: bold; 
-            margin-bottom: 10px; 
-            border-bottom: 1px solid #333; 
-            padding-bottom: 5px;
-        }
-
-        /* Itens da lista de regras */
-        .rule-item { margin-bottom: 12px; color: #bbb; }
-        .rule-item b { color: #eee; }
-
-        /* Tabela de Ranks no painel lateral */
-        .rank-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.65rem; }
-        .rank-table td { border: 1px solid #333; padding: 5px; }
-        .rank-table tr:nth-child(even) { background: rgba(255,255,255,0.03); }
-
-        /* Estilização do Player de Vídeo/Áudio */
-        .audio-player { 
-            background: rgba(0, 212, 255, 0.05); 
-            padding: 15px; 
-            border-radius: 5px; 
-            margin-bottom: 15px; 
-            border: 1px solid rgba(0, 212, 255, 0.3); 
-            text-align: center; 
-        }
-
-        /* Botões de controle da música */
-        .player-controls { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
-        .control-btn { 
-            background: none; 
-            border: 1px solid var(--system-blue); 
-            color: var(--system-blue); 
-            padding: 8px 12px; 
-            cursor: pointer; 
-            font-size: 0.9rem; 
-            border-radius: 3px; 
-            font-weight: bold; 
-        }
+        /* Player de Música */
+        .audio-player { background: rgba(0, 212, 255, 0.05); padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid rgba(0, 212, 255, 0.3); text-align: center; }
+        .player-controls { display: flex; justify-content: center; gap: 10px; margin-top: 5px; }
+        .control-btn { background: none; border: 1px solid var(--system-blue); color: var(--system-blue); padding: 5px 10px; cursor: pointer; font-size: 0.8rem; border-radius: 3px; }
         .control-btn:hover { background: var(--system-blue); color: black; }
 
-        /* Display visual do Rank (ex: RANK E) */
-        #rank-display { 
-            text-align: center; 
-            font-size: 2.8rem; 
-            font-weight: 900; 
-            margin: 10px 0; 
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5); 
-        }
-
-        /* Título do Rank (ex: RECRUTA) */
-        #rank-title { 
-            text-align: center; 
-            font-size: 0.7rem; 
-            color: #888; 
-            margin-bottom: 15px; 
-            letter-spacing: 2px; 
-        }
-
-        /* Grade de estatísticas (Nível, XP, Combo) */
+        /* Status e Grades */
+        #rank-display { text-align: center; font-size: 2.5rem; font-weight: 900; margin: 10px 0; text-shadow: 0 0 10px var(--system-blue); }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .stat-box { 
-            background: var(--system-card); 
-            padding: 10px; 
-            border-radius: 4px; 
-            font-size: 0.7rem; 
-            border: 1px solid #333; 
-            text-align: center;
-        }
+        .stat-box { background: var(--system-card); padding: 10px; border-radius: 4px; font-size: 0.7rem; border: 1px solid #333; text-align: center;}
 
-        /* Itens da lista de exercícios (Quests) */
-        .quest-item { 
-            background: rgba(255, 255, 255, 0.03); 
-            margin-bottom: 8px; 
-            padding: 12px; 
-            border-left: 4px solid var(--system-blue); 
-            cursor: pointer; 
-            font-size: 0.8rem; 
-            transition: 0.2s; 
-        }
+        /* Itens de Missão (Quests) */
+        .quest-item { background: rgba(255, 255, 255, 0.03); margin-bottom: 8px; padding: 12px; border-left: 4px solid var(--system-blue); cursor: pointer; font-size: 0.8rem; transition: 0.2s; }
+        .quest-item.completed { border-left-color: var(--success-green); opacity: 0.3; text-decoration: line-through; }
 
-        /* Estado do item quando clicado (concluído) */
-        .quest-item.completed { 
-            border-left-color: var(--success-green); 
-            opacity: 0.3; 
-            text-decoration: line-through; 
-        }
+        /* Lista do Ranking Global */
+        .ranking-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #222; font-size: 0.7rem; }
+        .ranking-item:first-child { color: var(--gold); border: 1px solid var(--gold); background: rgba(255, 204, 0, 0.05); }
 
-        /* Botão principal de finalizar */
-        .btn-main { 
-            background: var(--system-blue); 
-            color: black; 
-            border: none; 
-            width: 100%; 
-            padding: 15px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            letter-spacing: 2px; 
-            margin-top: 10px;
-        }
-
-        /* Botão discreto de reset */
-        .btn-reset { 
-            background: none; 
-            border: none; 
-            color: #444; 
-            width: 100%; 
-            padding: 8px; 
-            cursor: pointer; 
-            font-size: 0.55rem; 
-            margin-top: 15px; 
-            text-decoration: underline;
-        }
+        /* Botões */
+        .btn-main { background: var(--system-blue); color: black; border: none; width: 100%; padding: 15px; font-weight: bold; cursor: pointer; margin-top: 10px; letter-spacing: 2px; }
+        .btn-main:disabled { background: #444; cursor: not-allowed; }
+        
+        /* Tela de Identificação (Login) */
+        #name-setup { position: fixed; top:0; left:0; width:100%; height:100%; background: #000; z-index:999; display:flex; flex-direction:column; justify-content:center; align-items:center; }
+        input { background: #111; border: 1px solid var(--system-blue); color: white; padding: 12px; text-align: center; margin: 15px; width: 250px; font-size: 1rem; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-<div id="system-window">
-    <div class="header">
-        <h2 style="margin:0; font-size: 0.75rem; color: var(--system-blue);">[ JANELA DE STATUS ]</h2>
-    </div>
+<div id="name-setup" style="display: none;">
+    <p style="letter-spacing: 3px;">DIGITE SEU NOME DE HUNTER:</p>
+    <input type="text" id="hunter-name-input" maxlength="15" placeholder="EX: SUNG_JINWOO">
+    <button class="btn-main" onclick="saveHunterName()" style="width: 250px;">REIVINDICAR IDENTIDADE</button>
+    <p id="setup-msg" style="font-size: 0.6rem; margin-top: 10px; color: var(--penalty-red);"></p>
+</div>
 
+<div id="system-window">
+    <div class="header"><h2 style="margin:0; font-size: 0.75rem; color: var(--system-blue);">[ JANELA DE STATUS ]</h2></div>
+    
     <div class="audio-player">
-        <div style="font-size: 0.55rem; color: var(--system-blue); margin-bottom: 8px;">TRILHA SONORA: ON</div>
-        <div id="player-container" style="border-radius: 4px; overflow: hidden; margin-bottom: 10px; background: #000;">
-            <div id="player"></div>
-        </div>
+        <div id="player"></div>
         <div class="player-controls">
             <button class="control-btn" onclick="prevVideo()">⏮</button>
-            <button class="control-btn" onclick="playVideo()">PLAY / PAUSE</button>
+            <button class="control-btn" onclick="playVideo()">PLAY/PAUSE</button>
             <button class="control-btn" onclick="nextVideo()">⏭</button>
         </div>
     </div>
 
     <div id="rank-display">RANK E</div>
-    <div id="rank-title">RECRUTA</div>
+    <div id="hunter-label" style="text-align:center; color: var(--system-blue); font-size: 0.8rem; margin-bottom: 10px; letter-spacing: 3px;">---</div>
 
     <div class="stats-grid">
         <div class="stat-box">NÍVEL: <span id="lvl">1</span></div>
         <div class="stat-box">XP: <span id="xp">0</span>/100</div>
         <div class="stat-box">COMBO: <span id="streak">0</span> DIAS</div>
-        <div class="stat-box">ESTADO: <span style="color:var(--success-green)">NORMAL</span></div>
+        <div class="stat-box">SYNC: <span id="sync-icon" title="Status de Sincronização" style="color:red; font-size: 1.2rem;">●</span></div>
     </div>
 
     <div id="quest-list"></div>
 
     <button class="btn-main" onclick="checkCompletion()">FINALIZAR MISSÃO</button>
-    <button class="btn-reset" onclick="resetSystem()">[ REINICIAR SISTEMA ]</button>
+    <button onclick="resetSystem()" style="background:none; border:none; color:#333; width:100%; font-size:0.6rem; margin-top:15px; cursor:pointer; text-decoration: underline;">[ REINICIALIZAR DADOS DO SISTEMA ]</button>
+</div>
+
+<div id="ranking-window">
+    <div class="info-header">[ TOP 10 HUNTERS GLOBAIS ]</div>
+    <div id="global-rank-list">Sincronizando com o servidor...</div>
 </div>
 
 <div id="info-panel">
-    <div class="info-header">[ INSTRUÇÕES DO SISTEMA ]</div>
-    <div class="rule-item"><b>1. MISSÃO DIÁRIA:</b> Você deve marcar todos os itens da lista para poder finalizar a missão.</div>
-    <div class="rule-item"><b>2. GANHO DE XP:</b> Cada dia concluído rende <b>25 XP</b>. Ao chegar em 100, você sobe de nível.</div>
-    <div class="rule-item"><b>3. PENALIDADE:</b> Se você não acessar o sistema por mais de 24h, seu <b>COMBO (Streak)</b> voltará a zero automaticamente.</div>
-    <div class="rule-item"><b>4. CONTROLE:</b> Use os botões do HUD para navegar na trilha sonora enquanto treina.</div>
-    
-    <div class="info-header">[ ESCALA DE RANKS ]</div>
-    <table class="rank-table">
-        <tr><td>RANK E</td><td>LVL 01+</td></tr>
-        <tr><td>RANK D</td><td>LVL 05+</td></tr>
-        <tr><td>RANK C</td><td>LVL 15+</td></tr>
-        <tr><td>RANK B</td><td>LVL 30+</td></tr>
-        <tr><td>RANK A</td><td>LVL 50+</td></tr>
-        <tr><td>RANK S</td><td>LVL 80+</td></tr>
-    </table>
-    <p style="font-size: 0.6rem; color: #555; margin-top: 15px; text-align: center;">O DESPERTAR NÃO TEM VOLTA.</p>
+    <div class="info-header">[ DIRETRIZES ]</div>
+    <p style="font-size: 0.7rem; color:#888; line-height: 1.5;">
+        1. Complete todos os exercícios do seu Rank.<br>
+        2. "Finalizar Missão" envia seus dados para o ranking global.<br>
+        3. Falhar por mais de 24h resulta na perda total do combo.<br>
+        4. O sistema não permite nomes duplicados.
+    </p>
 </div>
 
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, setDoc, getDoc, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    // Suas chaves de conexão vinculadas ao huntersystem-95e44
+    const firebaseConfig = {
+        apiKey: "AIzaSyBP0TLTOXxaiW9Aq5f5twEEsoy9MZO8SBk",
+        authDomain: "huntersystem-95e44.firebaseapp.com",
+        projectId: "huntersystem-95e44",
+        storageBucket: "huntersystem-95e44.firebasestorage.app",
+        messagingSenderId: "921341713101",
+        appId: "1:921341713101:web:8c26196804f72169ac2784"
+    };
+
+    // Inicializa o Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let hunterName = localStorage.getItem('hunterName');
+    
+    // Verifica se o usuário já tem nome salvo
+    if (!hunterName) {
+        document.getElementById('name-setup').style.display = 'flex';
+    } else {
+        document.getElementById('hunter-label').innerText = hunterName;
+        setTimeout(() => syncToCloud(), 1000); 
+    }
+
+    // Função para Salvar Nome com Trava de Duplicidade
+    window.saveHunterName = async () => {
+        const input = document.getElementById('hunter-name-input');
+        const btn = document.querySelector('#name-setup .btn-main');
+        const name = input.value.trim().toUpperCase();
+
+        if (name.length < 3) {
+            alert("SISTEMA: NOME MUITO CURTO!");
+            return;
+        }
+
+        btn.innerText = "VERIFICANDO NO SISTEMA...";
+        btn.disabled = true;
+
+        try {
+            const docRef = doc(db, "hunters", name);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                alert("ALERTA: ESTE NOME JÁ PERTENCE A OUTRO HUNTER!");
+                btn.innerText = "REIVINDICAR IDENTIDADE";
+                btn.disabled = false;
+            } else {
+                localStorage.setItem('hunterName', name);
+                location.reload();
+            }
+        } catch (e) {
+            alert("ERRO DE CONEXÃO.");
+            btn.disabled = false;
+        }
+    };
+
+    // Envia Nível e Streak para o Ranking
+    async function syncToCloud() {
+        if (!hunterName) return;
+        const lvl = parseInt(localStorage.getItem('lvl')) || 1;
+        const streak = parseInt(localStorage.getItem('streak')) || 0;
+        try {
+            await setDoc(doc(db, "hunters", hunterName), {
+                name: hunterName, 
+                level: lvl, 
+                streak: streak, 
+                lastUpdate: new Date()
+            });
+            document.getElementById('sync-icon').style.color = "#00ff88"; // Sync Verde = Sucesso
+        } catch (e) { 
+            console.error(e); 
+            document.getElementById('sync-icon').style.color = "red";
+        }
+    }
+
+    // Escuta mudanças no Ranking em tempo real
+    const q = query(collection(db, "hunters"), orderBy("level", "desc"), orderBy("streak", "desc"), limit(10));
+    onSnapshot(q, (snapshot) => {
+        const list = document.getElementById('global-rank-list');
+        list.innerHTML = "";
+        snapshot.forEach((doc) => {
+            const d = doc.data();
+            list.innerHTML += `<div class="ranking-item"><span>${d.name}</span><span>LVL ${d.level} | 🔥 ${d.streak}</span></div>`;
+        });
+    });
+
+    // Torna a função de sync acessível globalmente
+    window.syncToCloud = syncToCloud;
+</script>
+
 <script src="https://www.youtube.com/iframe_api"></script>
-
 <script>
-    // --- 1. CONFIGURAÇÃO DO PLAYER DO YOUTUBE ---
+    // Configurações do YouTube
     let player;
-
-    // Função padrão da API: Cria o player de vídeo
     function onYouTubeIframeAPIReady() {
         player = new YT.Player('player', {
-            height: '60', 
-            width: '100%',
-            playerVars: { 
-                'listType': 'playlist', 
-                'list': 'RDr2yMWqNG7rk', // ID da playlist do YouTube
-                'enablejsapi': 1, 
-                'origin': window.location.origin 
-            },
-            events: { 'onReady': onPlayerReady }
+            height: '0', width: '0', // Invisível, apenas áudio
+            playerVars: { 'listType': 'playlist', 'list': 'RDr2yMWqNG7rk', 'enablejsapi': 1 },
         });
     }
+    function playVideo() { if(player.getPlayerState() == 1) player.pauseVideo(); else player.playVideo(); }
+    function nextVideo() { player.nextVideo(); }
+    function prevVideo() { player.previousVideo(); }
 
-    // Ações ao carregar o player
-    function onPlayerReady(event) { console.log("Áudio: Ativo"); }
-
-    // Alternar entre tocar e pausar
-    function playVideo() { 
-        if (!player) return; 
-        const s = player.getPlayerState(); 
-        s == 1 ? player.pauseVideo() : player.playVideo(); 
-    }
-
-    // Funções de Próximo e Anterior
-    function nextVideo() { if(player) player.nextVideo(); }
-    function prevVideo() { if(player) player.previousVideo(); }
-
-
-    // --- 2. GERENCIAMENTO DE DADOS (LOCAL STORAGE) ---
-    // Recupera dados salvos no navegador ou inicia novos valores se for a primeira vez
-    let xp = localStorage.getItem('xp') ? parseInt(localStorage.getItem('xp')) : 0;
-    let lvl = localStorage.getItem('lvl') ? parseInt(localStorage.getItem('lvl')) : 1;
-    let streak = localStorage.getItem('streak') ? parseInt(localStorage.getItem('streak')) : 0;
-    let lastDate = localStorage.getItem('lastDate');
-
-    // Banco de Dados de Exercícios por Rank
+    // Banco de Dados de Exercícios
     const quests = {
         E: ["- 10 FLEXÕES", "- 10 AGACHAMENTOS", "- 10 ABDOMINAIS", "- 1 MIN ALONGAMENTO"],
         D: ["- 15 FLEXÕES LARGAS", "- 20 AGACHAMENTOS", "- 20 ABDOMINAIS INFRA", "- 40 SEG. PRANCHA"],
         C: ["- 12 FLEXÕES DIAMANTE", "- 15 AGACH. EXPLOSIVO", "- 1 MIN PRANCHA", "- 10 REMADA CURVADA"],
         B: ["- 20 FLEXÕES ARQUEIRO", "- 30 AGACHAMENTOS", "- 40 ABDOMINAIS", "- 1:30 MIN PRANCHA"],
-        A: ["- 10 FLEXÕES EXPLOSIVAS", "- 15 AGACH. BÚLGARO (CADA)", "- 1 MIN CANIVETE", "- 2 MIN PRANCHA"],
+        A: ["- 10 FLEXÕES EXPLOSIVAS", "- 15 AGACH. BÚLGARO", "- 1 MIN CANIVETE", "- 2 MIN PRANCHA"],
         S: ["- 5 FLEXÕES 1 BRAÇO", "- 10 AGACH. 1 PERNA", "- 50 ABDOMINAIS INFRA", "- 3 MIN PRANCHA"]
     };
 
-    // --- 3. FUNÇÕES DE ATUALIZAÇÃO DA TELA ---
-
+    // Atualiza a interface com os dados do LocalStorage
     function updateDisplay() {
-        checkStreak(); // Verifica se o jogador perdeu o dia
-        
-        // Atualiza os números na tela
+        let xp = parseInt(localStorage.getItem('xp')) || 0;
+        let lvl = parseInt(localStorage.getItem('lvl')) || 1;
+        let streak = parseInt(localStorage.getItem('streak')) || 0;
+        let lastDate = localStorage.getItem('lastDate');
+
+        // Lógica de Penalidade: Perda de Streak
+        if(lastDate) {
+            const diff = Math.floor((new Date() - new Date(lastDate)) / (1000 * 3600 * 24));
+            if(diff > 1) { streak = 0; localStorage.setItem('streak', 0); }
+        }
+
         document.getElementById('xp').innerText = xp;
         document.getElementById('lvl').innerText = lvl;
         document.getElementById('streak').innerText = streak;
         
-        const rank = document.getElementById('rank-display');
-        const title = document.getElementById('rank-title');
+        const rDisplay = document.getElementById('rank-display');
+        let r = "E";
+        // Define Rank por Nível
+        if(lvl < 5) { r="E"; rDisplay.style.color="#00d4ff"; }
+        else if(lvl < 15) { r="D"; rDisplay.style.color="#00ff88"; }
+        else if(lvl < 30) { r="C"; rDisplay.style.color="#ffaa00"; }
+        else if(lvl < 50) { r="B"; rDisplay.style.color="#ff00ff"; }
+        else if(lvl < 80) { r="A"; rDisplay.style.color="#ff4444"; }
+        else { r="S"; rDisplay.style.color="#fff"; }
+        rDisplay.innerText = "RANK " + r;
 
-        // Lógica de evolução de Ranks baseada no Nível (LVL)
-        if(lvl < 5) { 
-            rank.innerText="RANK E"; rank.style.color="#00d4ff"; title.innerText="RECRUTA"; 
-        } else if (lvl < 15) { 
-            rank.innerText="RANK D"; rank.style.color="#00ff88"; title.innerText="DESPERTADO"; 
-        } else if (lvl < 30) { 
-            rank.innerText="RANK C"; rank.style.color="#ffaa00"; title.innerText="VETERANO"; 
-        } else if (lvl < 50) { 
-            rank.innerText="RANK B"; rank.style.color="#ff00ff"; title.innerText="MESTRE"; 
-        } else if (lvl < 80) { 
-            rank.innerText="RANK A"; rank.style.color="#ff4444"; title.innerText="COMANDANTE"; 
-        } else { 
-            rank.innerText="RANK S"; 
-            rank.style.color="#ffffff"; 
-            rank.style.textShadow="0 0 20px #fff"; 
-            title.innerText="MONARCA"; 
-        }
-        
-        loadQuests(); // Carrega os exercícios corretos para o Rank
-    }
-
-    // Verifica se passou mais de 1 dia desde o último treino
-    function checkStreak() {
-        if (lastDate) {
-            const today = new Date(); 
-            const last = new Date(lastDate);
-            today.setHours(0,0,0,0); 
-            last.setHours(0,0,0,0);
-            
-            // Se a diferença for maior que 1 dia (86.400.000 ms), o combo reseta
-            if (Math.floor((today - last) / (1000 * 3600 * 24)) > 1) { 
-                streak = 0; 
-                localStorage.setItem('streak', 0); 
-            }
-        }
-    }
-
-    // Desenha a lista de exercícios na tela
-    function loadQuests() {
-        const list = document.getElementById('quest-list'); 
-        list.innerHTML = ""; // Limpa a lista antes de desenhar
-        
-        // Define qual chave do objeto 'quests' usar baseada no LVL
-        let r = (lvl < 5) ? "E" : (lvl < 15 ? "D" : (lvl < 30 ? "C" : (lvl < 50 ? "B" : (lvl < 80 ? "A" : "S"))));
-        
-        // Cria cada linha de exercício
+        // Gera a lista de Quests
+        const qList = document.getElementById('quest-list');
+        qList.innerHTML = "";
         quests[r].forEach(q => {
-            const div = document.createElement('div'); 
-            div.className = "quest-item"; 
-            div.innerText = q;
-            // Evento de clique: marca/desmarca o exercício
-            div.onclick = function() { this.classList.toggle('completed'); };
-            list.appendChild(div);
+            const d = document.createElement('div');
+            d.className = "quest-item"; d.innerText = q;
+            d.onclick = () => d.classList.toggle('completed');
+            qList.appendChild(d);
         });
     }
 
-    // --- 4. FUNÇÕES DE AÇÃO DO USUÁRIO ---
-
+    // Finaliza a missão diária
     function checkCompletion() {
-        // Conta quantos exercícios foram marcados
-        const comp = document.querySelectorAll('.completed').length;
         const total = document.querySelectorAll('.quest-item').length;
+        const done = document.querySelectorAll('.completed').length;
         
-        // Validação: precisa marcar tudo
-        if(comp < total) { 
-            alert("SISTEMA: CUMPRA OS OBJETIVOS!"); 
-            return; 
-        }
+        if(done < total) return alert("SISTEMA: OBJETIVOS PENDENTES!");
         
-        // Validação: impede concluir mais de uma vez no mesmo dia
         const now = new Date();
-        if (lastDate && new Date(lastDate).toLocaleDateString() === now.toLocaleDateString()) { 
-            alert("O SISTEMA ESTÁ EM REPOUSO. VOLTE AMANHÃ!"); 
-            return; 
-        }
-
-        // Sucesso: Incrementa valores
-        streak++; 
-        xp += 25;
-
-        // Lógica de subir de nível
-        if(xp >= 100) { 
-            xp = 0; 
-            lvl++; 
-            alert("SISTEMA: VOCÊ SUBIU DE NÍVEL!"); 
-        }
-
-        // Salva os novos dados no navegador
-        localStorage.setItem('lastDate', now.toISOString());
-        localStorage.setItem('xp', xp); 
-        localStorage.setItem('lvl', lvl); 
-        localStorage.setItem('streak', streak);
+        const last = localStorage.getItem('lastDate');
         
-        alert("MISSÃO CONCLUÍDA!");
-        updateDisplay(); // Atualiza a interface
+        // Bloqueio de 24h
+        if(last && new Date(last).toLocaleDateString() === now.toLocaleDateString()) {
+            return alert("SISTEMA: MISSÃO DIÁRIA JÁ CONCLUÍDA.");
+        }
+
+        let xp = parseInt(localStorage.getItem('xp')) || 0;
+        let lvl = parseInt(localStorage.getItem('lvl')) || 1;
+        let streak = (parseInt(localStorage.getItem('streak')) || 0) + 1;
+        
+        xp += 25; // Cada missão dá 25 de XP
+        if(xp >= 100) { xp = 0; lvl++; alert("SISTEMA: VOCÊ SUBIU DE NÍVEL!"); }
+
+        localStorage.setItem('xp', xp);
+        localStorage.setItem('lvl', lvl);
+        localStorage.setItem('streak', streak);
+        localStorage.setItem('lastDate', now.toISOString());
+        
+        // Dispara sincronização com o Firebase
+        if(window.syncToCloud) window.syncToCloud();
+        
+        updateDisplay();
+        alert("MISSÃO CONCLUÍDA COM SUCESSO!");
     }
 
-    // Reseta todos os dados para começar do zero
+    // Função para resetar tudo
     function resetSystem() { 
-        if(confirm("ATENÇÃO: DESEJA APAGAR TODO O SEU PROGRESSO?")) { 
+        if(confirm("ATENÇÃO: DESEJA EXTERMINAR SEUS DADOS? ISSO NÃO AFETA O RANKING GLOBAL, APENAS SEU PROGRESSO LOCAL.")) { 
             localStorage.clear(); 
             location.reload(); 
         } 
     }
 
-    // Inicia o sistema ao abrir a página
+    // Inicia a tela
     updateDisplay();
 </script>
 </body>
